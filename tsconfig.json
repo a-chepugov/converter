@@ -1,0 +1,19 @@
+{
+	"compileOnSave": true,
+	"compilerOptions": {
+		"baseUrl": "source",
+		"rootDir": "source",
+		"outDir": "build",
+		"module": "commonjs",
+		"target": "ES2015",
+		"noImplicitAny": true,
+		"removeComments": false,
+		"sourceMap": true,
+		"noErrorTruncation": true,
+		"pretty": true
+	},
+	"exclude": [
+		"node_modules",
+		"**/*.test.ts"
+	]
+}

@@ -1,0 +1,27 @@
+{
+	"name": "converter",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"module": "index.ts",
+	"scripts": {
+		"start": "ts-node source/index.ts",
+		"test": "mocha -r ts-node/register source/**/*test.ts"
+	},
+	"dependencies": {
+		"imagemagick-cli-wrapper": "git+https://github.com/a-chepugov/imagemagick-cli-wrapper.git "
+	},
+	"devDependencies": {
+		"@types/chai": "^4.1.7",
+		"@types/mocha": "^5.2.7",
+		"@types/node": "^12.12.6",
+		"chai": "^4.2.0",
+		"mocha": "^6.2.0",
+		"ts-node": "^8.3.0",
+		"typedoc": "^0.17.7",
+		"typescript": "^3.5.3"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
+}
