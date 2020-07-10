@@ -15,6 +15,7 @@ export class Router {
 
 	constructor() {
 		this._handlers = new Map();
+		Object.freeze(this);
 	}
 
 	get handlers() {
@@ -89,7 +90,7 @@ export class Router {
 			ctx.parameters = Object.assign({}, parameters);
 			return new Promise((resolve, reject) => {
 				try {
-					return resolve(handler(ctx, result));
+					resolve(handler(ctx, result));
 				} catch (error) {
 					reject(error);
 				}
@@ -97,7 +98,7 @@ export class Router {
 		} else {
 			const error = new Error(STATUS_CODES[404]);
 			// @ts-ignore
-			error.status = 404;
+			error.code = 404;
 			return Promise.reject(error);
 		}
 	}

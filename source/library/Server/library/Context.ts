@@ -8,7 +8,8 @@ export class Context {
 	constructor(request: IncomingMessage, response: ServerResponse) {
 		this.request = request;
 		this.response = response;
-		this.parameters = {};
+		this._parameters = {};
+		Object.freeze(this);
 	}
 
 	get parameters() {
@@ -16,12 +17,8 @@ export class Context {
 	};
 
 	set parameters(parameters: { [key: string]: string }) {
-		this._parameters = parameters;
+		Object.assign(this._parameters, parameters);
 	};
-
-	get body() {
-		return
-	}
 
 	send = (payload: any) => this.response.end(payload.toString())
 

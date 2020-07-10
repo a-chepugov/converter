@@ -5,7 +5,7 @@ import Listener from "./library/Listener";
 import Context from "./library/Context";
 
 export class Server {
-	public readonly server: http.Server;
+	protected readonly _server: http.Server;
 	protected listener: Listener;
 	protected _port: number;
 	protected _host: string;
@@ -13,7 +13,11 @@ export class Server {
 
 	constructor() {
 		this.listener = new Listener();
-		this.server = http.createServer(this.listener.listen);
+		this._server = http.createServer(this.listener.listen);
+	}
+
+	get server() {
+		return this._server;
 	}
 
 	host(host: string) {
@@ -47,7 +51,7 @@ export class Server {
 	}
 
 	init = (callback?: () => void) => {
-		this.server.listen(this._port, this._host, this._backlog, callback);
+		this._server.listen(this._port, this._host, this._backlog, callback);
 		return this;
 	}
 }

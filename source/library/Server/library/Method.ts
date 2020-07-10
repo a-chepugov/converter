@@ -1,4 +1,4 @@
-type Method =
+export type Method =
 	'GET'
 	| 'get'
 	| 'HEAD'
@@ -19,5 +19,4 @@ type Method =
 	| 'patch'
 	| string ;
 
-export default Methods;
-
+export default Method;
