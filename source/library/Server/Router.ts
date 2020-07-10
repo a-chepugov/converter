@@ -11,7 +11,7 @@ type RouteMatcher = string | RegExp;
 type RouteHandler = NextRequestListener;
 
 export class Router {
-	protected _handlers: Map<Method, Map<RegExp, RouteHandler>>;
+	protected _handlers: Map<Method, Map<RouteMatcher, {pattern: RegExp, handler:RouteHandler}>>;
 
 	constructor() {
 		this._handlers = new Map();
@@ -36,10 +36,10 @@ export class Router {
 		}
 		if (typeof matcher === 'string') {
 			const matchedWithGroups = matcher.replace(/\/:(\w+)/g, '/(?<$1>\\w*)');
-			const regexp = new RegExp(`^${matchedWithGroups}$`);
-			methodHandlers.set(regexp, handler);
+			const pattern = new RegExp(`^${matchedWithGroups}$`);
+			methodHandlers.set(matcher, {pattern, handler});
 		} else {
-			methodHandlers.set(matcher, handler);
+			methodHandlers.set(matcher, {pattern: matcher, handler});
 		}
 		return this;
 	}
@@ -48,10 +48,10 @@ export class Router {
 		method = String.prototype.toLocaleUpperCase.call(method);
 		const methodHandlers = this._handlers.get(method);
 		if (methodHandlers) {
-			const entriesIterator = methodHandlers.entries();
+			const entriesIterator = methodHandlers.values();
 			for (let item of entriesIterator) {
-				const [matcher, handler] = item;
-				const result = matcher.exec(pathname)
+				const {pattern, handler} = item;
+				const result = pattern.exec(pathname)
 				if (result) {
 					return [handler, result.groups];
 				}
@@ -71,8 +71,8 @@ export class Router {
 			.reduce((self: Router, [method, handlers]) => {
 				return Array
 					.from(handlers.entries())
-					.reduce((self: Router, [regexp, handler]) => {
-						return self.on(method, regexp, handler);
+					.reduce((self: Router, [matcher, {handler}]) => {
+						return self.on(method, matcher, handler);
 					}, self)
 			}, this) as Router;
 	}

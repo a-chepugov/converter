@@ -5,4 +5,4 @@ import auxiliary from './auxiliary';
 const router = new Router()
 	.on('post', '/photos/convert', Photos.convert);
 
-export default auxiliary.concat(router);
+export default router.concat(auxiliary);
