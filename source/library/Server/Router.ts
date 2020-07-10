@@ -1,10 +1,9 @@
 import {STATUS_CODES} from "http";
-
+import {Listener} from "./library/Listener";
 import * as url from "url";
 
 import Method from "./library/Method";
 
-import foldNextListeners from "./library/foldNextListeners";
 import {NextRequestListener} from "./library/RequestListener";
 import Context from "./library/Context";
 
@@ -61,7 +60,7 @@ export class Router {
 	}
 
 	on = (method: Method, matcher: RouteMatcher, ...listeners: RouteHandler[]) => {
-		const listener = listeners.length === 1 ? listeners[0] : foldNextListeners(listeners);
+		const listener = listeners.length === 1 ? listeners[0] : Listener.build(listeners);
 		this.setRouterHandler(method, matcher, listener);
 		return this;
 	}
