@@ -1,14 +1,18 @@
 import {toJSON} from "../../library/Server/library/Stream";
 import {Context} from "../../library/Server";
+import {Profiler} from "../../library/Profiler";
 
 import Meta from "../../Models/Meta";
 
 import Photos, {AccessError, ConvertError} from "../../Services/Photos";
 
+const ProfilerDate = Profiler.factory();
+
 const photos = new Photos();
 
-export function convert({request, response, json}: Context) {
-	return toJSON(request)
+export function convert(ctx: Context) {
+	const profiler = ProfilerDate.of('context');
+	return toJSON(ctx.request)
 		.catch((error) => {
 			error.status = 400;
 			throw error;
@@ -17,6 +21,10 @@ export function convert({request, response, json}: Context) {
 			const {input, output, format, area, presets, meta} = body;
 			return photos
 				.convert(input, output, format, area, presets, meta as Meta)
+				.then((response: any) => {
+					ctx.response.setHeader('X-COMPLETED-IN', profiler.end().result);
+					return response;
+				})
 				.catch((error) => {
 					if (error instanceof AccessError) {
 						error.code = 403;
