@@ -7,11 +7,12 @@ import Meta from "../../Models/Meta";
 import Photos, {AccessError, ConvertError} from "../../Services/Photos";
 
 const ProfilerDate = Profiler.factory();
+const profilerConvert = ProfilerDate.of('Photos.convert')
 
 const photos = new Photos();
 
 export function convert(ctx: Context) {
-	const profiler = ProfilerDate.of('context');
+	const profiler = profilerConvert.start();
 	return toJSON(ctx.request)
 		.catch((error) => {
 			error.status = 400;

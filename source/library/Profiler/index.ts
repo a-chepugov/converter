@@ -1,79 +1,111 @@
 export class Profiler<T extends number | bigint> {
-	private readonly label: string;
-	private _startedAt: T;
-	private _endedAt: T;
-	private _meter: () => T;
+	protected readonly label: string;
+	protected _meter: () => T;
 
-	constructor(label?: string) {
+	constructor(label = '') {
 		this.label = label;
 	}
 
 	static factory(meter: () => number | bigint = Date.now) {
-		return class ProfilerConfigured extends Profiler<ReturnType<typeof meter>> {
-			constructor(label?: string) {
-				super(label);
-				this.meter(meter);
-			}
-
-			static of(label?: string) {
-				return new ProfilerConfigured(label).start();
+		return class Factory {
+			static of(label = '') {
+				return new Profiler(label).configure(meter);
 			}
 		}
 	}
 
-	static of(label?: string) {
-		return new Profiler(label).start();
-	}
-
-	meter(meter: () => T) {
-		if(this._meter)
-
+	configure(meter: () => T): any {
 		if (typeof meter === 'function') {
-			this._meter = meter;
+			return new ProfilerConfigured(this.label, meter);
 		} else {
 			throw new Error(`${this.label} profiler is supplied with meter which is not a function`);
 		}
-		return this;
 	}
 
-	start = () => {
-		if (this.started) {
-			throw new Error(`${this.label} profiler has been already started`);
-		}
-		if (typeof this._meter === 'function') {
-			this._startedAt = this._meter();
-		} else {
-			throw new Error(`${this.label} profiler meter hasn't been selected yet`);
-		}
-		return this;
+	start = (postfix = ''): any => {
+		throw new Error(`${this.label} profiler meter hasn't been configured yet`);
 	}
 
-	end = () => {
-		if (this.ended) {
-			throw new Error(`${this.label} profiler has been already ended`);
-		}
-		if (typeof this._meter === 'function') {
-			this._endedAt = this._meter();
-		} else {
-			throw new Error(`${this.label} profiler meter hasn't been selected yet`);
-		}
-		return this;
+	end = (postfix = ''): any => {
+		throw new Error(`${this.label} profiler hasn't been started yet`);
+	}
+
+	get configured() {
+		return false;
 	}
 
 	get started() {
-		return Boolean(this._startedAt);
+		return false;
 	}
 
 	get ended() {
-		return Boolean(this._endedAt);
+		return false;
+	}
+
+	get result(): any {
+		throw new Error(`${this.label} profiler hasn't collect enough data`);
+	}
+}
+
+class ProfilerConfigured<T extends number | bigint> extends Profiler<T> {
+	constructor(label: string, meter: () => T) {
+		super(label);
+		this._meter = meter;
+	}
+
+	configure(meter: () => T) {
+		throw new Error(`${this.label} profiler has been configured already`);
+	}
+
+	start = (postfix = '') => {
+		return new ProfilerStarted(this.label + postfix, this._meter, this._meter());
+	}
+
+	get configured() {
+		return true;
+	}
+
+}
+
+class ProfilerStarted<T extends number | bigint> extends ProfilerConfigured<T> {
+	protected startedAt: T;
+
+	constructor(label: string, meter: () => T, _startedAt: T) {
+		super(label, meter);
+		this.startedAt = _startedAt;
+	}
+
+	start = (postfix = '') => {
+		throw new Error(`${this.label} profiler has been already started`);
+	}
+
+	end = (postfix = '') => {
+		return new ProfilerEnded(this.label + postfix, this._meter, this.startedAt, this._meter());
+	}
+
+	get started() {
+		return true;
+	}
+}
+
+class ProfilerEnded<T extends number | bigint> extends ProfilerStarted<T> {
+	protected endedAt: T;
+
+	constructor(label: string, meter: () => T, _startedAt: T, _endedAt: T) {
+		super(label, meter, _startedAt);
+		this.endedAt = _endedAt;
+	}
+
+	end = (postfix = '') => {
+		throw new Error(`${this.label} profiler has been already ended`);
+	}
+
+	get ended() {
+		return true;
 	}
 
 	get result() {
-		if (this.started && this.ended) {
-			return this._endedAt - this._startedAt;
-		} else {
-			throw new Error(`${this.label} profiler hasn't collect enough data`);
-		}
+		return this.endedAt - this.startedAt;
 	}
 }
 
