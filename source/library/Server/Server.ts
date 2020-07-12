@@ -58,6 +58,7 @@ export class Server {
 
 	init = (callback?: () => void) => {
 		this._server.listen(this._port, this._host, this._backlog, callback);
+		Object.freeze(this);
 		return this;
 	}
 }
