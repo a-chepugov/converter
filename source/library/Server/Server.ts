@@ -5,14 +5,14 @@ import Listener from "./library/Listener";
 import Context from "./library/Context";
 
 export class Server {
-	protected readonly _server: http.Server;
 	protected listener: Listener;
+	protected readonly _server: http.Server;
 	protected _port: number;
 	protected _host: string;
 	protected _backlog: number;
 
-	constructor() {
-		this.listener = new Listener();
+	constructor(listeners?: Iterable<NextRequestListener>) {
+		this.listener = new Listener(listeners);
 		this._server = http.createServer(this.listener.listen);
 	}
 
