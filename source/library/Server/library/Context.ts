@@ -18,6 +18,7 @@ export class Context {
 
 	set parameters(parameters: { [key: string]: string }) {
 		Object.assign(this._parameters, parameters);
+		Object.freeze(this._parameters);
 	};
 
 	send = (payload: any) => this.response.end(payload.toString())
