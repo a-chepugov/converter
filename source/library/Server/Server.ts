@@ -35,6 +35,12 @@ export class Server {
 		return this;
 	}
 
+	static on = (host = 'localhost', port = 80, backlog?: number) =>
+		new Server()
+			.host(host)
+			.port(port)
+			.backlog(backlog);
+
 	interseptor(interseptor: (ctx: Context, error: any) => void) {
 		this.listener.interceptor = interseptor;
 		return this;

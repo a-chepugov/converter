@@ -15,9 +15,8 @@ const interseptor = (ctx: Context, error: any) => {
 	global.logger.error((error?.internal ? error.internal : error?.message ? error.message : error), `: ${ctx.request.url}`);
 }
 
-new Server()
-	.port(PORT)
-	.host(HOST)
-	.interseptor(interseptor)
+Server
+	.on(HOST, PORT)
 	.use(router.listen)
+	.interseptor(interseptor)
 	.init(() => console.info(`Server started at http://${HOST}:${PORT}`))
