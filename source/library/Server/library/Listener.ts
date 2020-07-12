@@ -9,8 +9,8 @@ export class Listener {
 	private bundle: NextRequestListener;
 	public interceptor: (request: Context, error: any) => any;
 
-	constructor() {
-		this.listeners = new Set();
+	constructor(listeners?: Iterable<NextRequestListener>) {
+		this.listeners = new Set(listeners);
 		this.bundle = Listener.build(this.listeners);
 		this.interceptor = (ctx: Context, error: any) => {
 			try {
