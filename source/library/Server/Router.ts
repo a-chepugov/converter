@@ -11,7 +11,7 @@ type RouteMatcher = string | RegExp;
 type RouteHandler = NextRequestListener;
 
 export class Router {
-	protected _handlers: Map<Method, Map<RouteMatcher, {pattern: RegExp, handler:RouteHandler}>>;
+	protected _handlers: Map<Method, Map<RouteMatcher, { pattern: RegExp, handler: RouteHandler }>>;
 
 	constructor() {
 		this._handlers = new Map();
@@ -66,23 +66,6 @@ export class Router {
 		return this;
 	}
 
-	from = (source: Router): Router => {
-		return Array
-			.from(source.handlers)
-			.reduce((self: Router, [method, handlers]) => {
-				return Array
-					.from(handlers.entries())
-					.reduce((self: Router, [matcher, {handler}]) => {
-						return self.on(method, matcher, handler);
-					}, self)
-			}, this) as Router;
-	}
-
-
-	concat = (router: Router): Router => {
-		return (new Router()).from(this).from(router);
-	}
-
 	listen: NextRequestListener = (ctx: Context, result: any) => {
 		const anUrl = url.parse(ctx.request.url);
 		const [handler, parameters] = this.getRouterHandler(ctx.request.method, anUrl.pathname) || [];
@@ -102,6 +85,20 @@ export class Router {
 			return Promise.reject(error);
 		}
 	}
+
+	append = (source: Router): Router => {
+		return Array
+			.from(source.handlers)
+			.reduce((self: Router, [method, handlers]) => {
+				return Array
+					.from(handlers.entries())
+					.reduce((self: Router, [matcher, {handler}]) => {
+						return self.on(method, matcher, handler);
+					}, self)
+			}, this) as Router;
+	}
+
+	concat = (router: Router): Router => (new Router()).append(this).append(router)
 }
 
 export default Router;
