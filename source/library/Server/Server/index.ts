@@ -1,6 +1,6 @@
 import * as http from 'http';
 
-import {NextRequestListener} from "./RequestListener";
+import {ContextListener} from "./RequestListener";
 import Listener from "./Listener";
 import Context from "./Context";
 export {Context} from "./Context";
@@ -12,7 +12,7 @@ export class Server {
 	protected _host: string;
 	protected _backlog: number;
 
-	constructor(listeners?: Iterable<NextRequestListener>) {
+	constructor(listeners?: Iterable<ContextListener>) {
 		this.listener = new Listener(listeners);
 		this._server = http.createServer(this.listener.listen);
 	}
@@ -47,12 +47,12 @@ export class Server {
 		return this;
 	}
 
-	use = (nextRequestListener: NextRequestListener) => {
+	use = (nextRequestListener: ContextListener) => {
 		this.listener.register(nextRequestListener);
 		return this;
 	}
 
-	unuse = (nextRequestListener: NextRequestListener) => {
+	unuse = (nextRequestListener: ContextListener) => {
 		this.listener.unregister(nextRequestListener);
 		return this;
 	}

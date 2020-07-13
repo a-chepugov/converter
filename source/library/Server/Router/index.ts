@@ -3,7 +3,7 @@ import * as url from "url";
 
 import Method from "./Method";
 
-import {NextRequestListener} from "../Server/RequestListener";
+import {ContextListener} from "../Server/RequestListener";
 import {Listener, Context as ListenerContext} from "../Server/Listener";
 
 import {Context} from "./Context";
@@ -69,7 +69,7 @@ export class Router {
 		return this;
 	}
 
-	listen: NextRequestListener = (ctx: ListenerContext, result: any) => {
+	listen: ContextListener = (ctx: ListenerContext, result: any) => {
 		const anUrl = url.parse(ctx.request.url);
 		const [handler, parameters] = this.getRouterHandler(ctx.request.method, anUrl.pathname) || [];
 		if (handler) {

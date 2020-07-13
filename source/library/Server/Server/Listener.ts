@@ -1,5 +1,5 @@
 import {STATUS_CODES} from "http";
-import {RequestListener, NextRequestListener} from "./RequestListener";
+import {RequestListener, ContextListener} from "./RequestListener";
 import foldNextListeners from "./foldNextListeners";
 
 import Context from "./Context";
@@ -8,11 +8,11 @@ import {Stream} from "stream";
 export {Context} from "./Context";
 
 export class Listener {
-	private listeners: Set<NextRequestListener>;
-	private bundle: NextRequestListener;
+	private listeners: Set<ContextListener>;
+	private bundle: ContextListener;
 	public interceptor: (request: Context, error: any) => any;
 
-	constructor(listeners?: Iterable<NextRequestListener>) {
+	constructor(listeners?: Iterable<ContextListener>) {
 		this.listeners = new Set(listeners);
 		this.bundle = Listener.build(this.listeners);
 		this.interceptor = (ctx: Context, error: any) => {
@@ -29,20 +29,20 @@ export class Listener {
 		}
 	}
 
-	static build = (listeners: Iterable<NextRequestListener>) => {
+	static build = (listeners: Iterable<ContextListener>) => {
 		const folded = foldNextListeners(listeners);
 		return (ctx: Context, initial: any): Promise<any> =>
 			folded.execute((ctx: Context, result: Promise<any>) =>
 				result, ctx, initial);
 	}
 
-	register = (listener: NextRequestListener) => {
+	register = (listener: ContextListener) => {
 		this.listeners.add(listener);
 		this.bundle = Listener.build(this.listeners.values());
 		return this;
 	}
 
-	unregister = (listener: NextRequestListener) => {
+	unregister = (listener: ContextListener) => {
 		this.listeners.delete(listener);
 		this.bundle = Listener.build(this.listeners.values());
 		return this;

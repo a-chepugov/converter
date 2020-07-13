@@ -1,15 +1,15 @@
 import Next from "../library/Next";
 
-import {NextRequestListener} from "./RequestListener";
+import {ContextListener} from "./RequestListener";
 import Context from "./Context";
 
-export function foldNextListeners(listeners: Iterable<NextRequestListener>) {
+export function foldNextListeners(listeners: Iterable<ContextListener>) {
 	return Array
 		.from(listeners)
 		.reduce(
 			(
 				chain: Next<[Context, Promise<any>], Promise<any>, [Context, Promise<any>], Promise<any>>,
-				listener: NextRequestListener
+				listener: ContextListener
 			) =>
 				chain.next(
 					(
