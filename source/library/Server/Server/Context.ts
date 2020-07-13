@@ -7,16 +7,16 @@ export class Context {
 	readonly response: ServerResponse;
 	readonly state: any;
 
-	constructor({request, response}: { request: IncomingMessage, response: ServerResponse }, state?: any) {
+	constructor({request, response, state}: { request: IncomingMessage, response: ServerResponse, state?: any }) {
 		this.request = request;
 		this.response = response;
-		this.state = Object.create(typeof state === 'object' ? state : null);
-		Object.freeze(this.state);
+		this.state = (state === null || state === undefined ? {} : state);
+		Object.seal(this.state);
 		Object.freeze(this);
 	}
 
 	static of(request: IncomingMessage, response: ServerResponse, state: any) {
-		return new Context({request, response}, state);
+		return new Context({request, response, state});
 	}
 
 	parse = (type?: string) => {

@@ -1,8 +1,8 @@
 import Server, {Context} from '../library/Server';
-import {generate} from '../library/HEX';
+import {State} from './library/State';
 import router from './Router';
 
-import {IncomingMessage, STATUS_CODES} from "http";
+import {STATUS_CODES} from "http";
 
 const PORT = 3000;
 const HOST = 'localhost';
@@ -22,15 +22,9 @@ const interceptor = (ctx: Context, error: any) => {
 	global.logger.error((error?.internal ? error.internal : error?.message ? error.message : error), `: ${ctx.request.url}`);
 }
 
-const setter = (request: IncomingMessage) => {
-	const requestId = request.headers['request-id'];
-	const id = Array.isArray(requestId) ? requestId[0] : requestId ? requestId : generate(36);
-	return {id};
-}
-
 Server
 	.on(HOST, PORT)
-	.with(setter)
+	.with(State.of)
 	.use(router.listen)
 	.interceptor(interceptor)
 	.init(() => console.info(`Server started on http://${HOST}:${PORT}`))

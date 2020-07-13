@@ -6,7 +6,7 @@ import {IncomingMessage, ServerResponse} from "http";
 export {Context, ContextListener} from "./Listener";
 
 export class Server {
-	protected listener: Listener;
+	protected readonly listener: Listener;
 	protected readonly _server: http.Server;
 	protected _port: number;
 	protected _host: string;
