@@ -1,6 +1,8 @@
 import * as http from 'http';
 
 import {Listener, Context, ContextListener} from "./Listener";
+import {IncomingMessage, ServerResponse} from "http";
+
 export {Context, ContextListener} from "./Listener";
 
 export class Server {
@@ -40,10 +42,15 @@ export class Server {
 			.port(port)
 			.backlog(backlog);
 
-	interseptor(interseptor: (ctx: Context, error: any) => void) {
-		this.listener.interceptor = interseptor;
+	interceptor(interceptor: (ctx: Context, error: any) => void) {
+		this.listener.interceptor = interceptor;
 		return this;
 	}
+
+	with = (setter: (request: IncomingMessage, response: ServerResponse) => any) => {
+		this.listener.with(setter);
+		return this;
+	};
 
 	use = (nextRequestListener: ContextListener) => {
 		this.listener.register(nextRequestListener);

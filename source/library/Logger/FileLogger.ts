@@ -31,7 +31,7 @@ export class FileLogger implements Logger {
 	}
 
 	private _write(...messages: any[]) {
-		this.stream.write(new Date().toISOString() + ':' + messages.map(i => typeof i?.toString === 'function' ? i.toString() : '').join('') + '\n');
+		this.stream.write(new Date().toISOString() + ': ' + messages.map(i => typeof i?.toString === 'function' ? i.toString() : '').join('') + '\n');
 		return this;
 	}
 

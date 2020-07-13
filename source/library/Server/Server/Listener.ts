@@ -4,14 +4,14 @@ import foldNextListeners from "./foldNextListeners";
 export type RequestListener = (request: IncomingMessage, response: ServerResponse) => void;
 
 import {Context, ContextListener} from "./Context";
-export {Context, ContextListener} from "./Context";
 
-import ReadableStream = NodeJS.ReadableStream;
+export {Context, ContextListener} from "./Context";
 
 export class Listener {
 	private listeners: Set<ContextListener>;
 	private bundle: ContextListener;
-	public interceptor: (request: Context, error: any) => any;
+	private setter: (request: IncomingMessage, response: ServerResponse) => any;
+	public interceptor: (ctx: Context, error: any) => any;
 
 	constructor(listeners?: Iterable<ContextListener>) {
 		this.listeners = new Set(listeners);
@@ -27,6 +27,14 @@ export class Listener {
 			} catch (error) {
 				console.error(error);
 			}
+		}
+	}
+
+	with(setter: (request: IncomingMessage, response: ServerResponse) => any) {
+		if (typeof setter === 'function') {
+			this.setter = setter;
+		} else {
+			throw new Error('Extractor must be a function');
 		}
 	}
 
@@ -50,16 +58,13 @@ export class Listener {
 	}
 
 	listen: RequestListener = (request, response) => {
-		const ctx = new Context({request, response});
+		const state = this.setter ? this.setter(request, response) : {};
+		const ctx = Context.of(request, response, state);
+
 		return this.bundle(ctx, undefined)
 			.then((result: any) => {
 				if (!ctx.response.finished) {
 					switch (true) {
-						case typeof result === 'string':
-						case result instanceof Buffer:
-							return ctx.send(result);
-						case result instanceof ReadableStream:
-							return ctx.send(result, 'stream');
 						case typeof result === 'object' && Object.getPrototypeOf(result) === Object.prototype:
 							return ctx.send(result, 'json');
 						case typeof result?.toString === 'function':
