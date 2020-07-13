@@ -1,6 +1,7 @@
 import Image from '../Models/Image';
 import ImageWatermark from '../Models/ImageWatermark';
 import {Image as ImagePreset, Watermark as WatermarkPreset} from '../Models/Preset';
+import * as path from "path";
 
 export function toWatermark(preset: WatermarkPreset, staticpath: string): ImageWatermark {
 	return (new ImageWatermark())
@@ -29,4 +30,9 @@ export function toImage(preset: ImagePreset, staticpath: string): Image {
 		image.set('watermarks', watermarks);
 	}
 	return image
+}
+
+export function toFilePath(otputpath: string, name: string, preset: ImagePreset): string {
+	return path.normalize(path.join(otputpath, name + preset.suffix + '.' + preset.format));
+	return path.normalize(path.join(otputpath, name + preset.suffix + '.' + preset.format));
 }

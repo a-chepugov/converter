@@ -6,13 +6,13 @@ import Meta from "../Models/Meta";
 
 import Converter from "./Converter";
 
-export {ConvertError} from "./Converter";
+export {ConvertError, InvalidPresetError} from "./Converter";
 
 export class AccessError extends Error {
 };
 
 export class Photos {
-	convert = async (input: string, output: string, format: string, area: string[], presets: string[], meta: Meta) => {
+	convert = async (input: string, output: string, area: string[], presets: string[], meta: Meta) => {
 		const cwd = process.cwd();
 		const inputsDir = path.normalize(path.join(cwd, 'input'));
 		const outputsDir = path.normalize(path.join(cwd, 'output'));
