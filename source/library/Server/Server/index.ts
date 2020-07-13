@@ -1,9 +1,7 @@
 import * as http from 'http';
 
-import {ContextListener} from "./RequestListener";
-import Listener from "./Listener";
-import Context from "./Context";
-export {Context} from "./Context";
+import {Listener, Context, ContextListener} from "./Listener";
+export {Context, ContextListener} from "./Listener";
 
 export class Server {
 	protected listener: Listener;

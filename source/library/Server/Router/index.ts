@@ -3,7 +3,7 @@ import * as url from "url";
 
 import Method from "./Method";
 
-import {ContextListener} from "../Server/RequestListener";
+import {ContextListener} from "../Server";
 import {Listener, Context as ListenerContext} from "../Server/Listener";
 
 import {Context} from "./Context";

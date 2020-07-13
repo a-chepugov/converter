@@ -1,7 +1,6 @@
 import Next from "../library/Next";
 
-import {ContextListener} from "./RequestListener";
-import Context from "./Context";
+import {Context, ContextListener} from "./Context";
 
 export function foldNextListeners(listeners: Iterable<ContextListener>) {
 	return Array

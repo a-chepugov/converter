@@ -1,11 +1,12 @@
-import {STATUS_CODES} from "http";
-import {RequestListener, ContextListener} from "./RequestListener";
+import {IncomingMessage, ServerResponse, STATUS_CODES} from "http";
 import foldNextListeners from "./foldNextListeners";
 
-import Context from "./Context";
-import {Stream} from "stream";
+export type RequestListener = (request: IncomingMessage, response: ServerResponse) => void;
 
-export {Context} from "./Context";
+import {Context, ContextListener} from "./Context";
+export {Context, ContextListener} from "./Context";
+
+import ReadableStream = NodeJS.ReadableStream;
 
 export class Listener {
 	private listeners: Set<ContextListener>;
@@ -57,7 +58,7 @@ export class Listener {
 						case typeof result === 'string':
 						case result instanceof Buffer:
 							return ctx.send(result);
-						case result instanceof Stream:
+						case result instanceof ReadableStream:
 							return ctx.send(result, 'stream');
 						case typeof result === 'object' && Object.getPrototypeOf(result) === Object.prototype:
 							return ctx.send(result, 'json');

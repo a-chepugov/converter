@@ -23,3 +23,5 @@ export class Context {
 }
 
 export default Context;
+
+export type ContextListener = (ctx: Context, result: any) => any;
