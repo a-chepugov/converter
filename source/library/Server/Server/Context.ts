@@ -17,7 +17,7 @@ export class Context {
 	}
 
 	send = (payload: any, type?: string) => {
-		return Sender.of(type).execute(payload, this.response);
+		return Sender.of(type).execute(this.response, payload);
 	}
 
 }

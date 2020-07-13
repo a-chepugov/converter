@@ -27,7 +27,7 @@ export class Sender<T> {
 		}
 	}
 
-	execute(payload: T, target: any) {
+	execute(target: any, payload: T) {
 		return new this.strategy(target).send(payload);
 	}
 }
