@@ -1,4 +1,4 @@
-import {STATUS_CODES} from "http";
+import {IncomingMessage, ServerResponse, STATUS_CODES} from "http";
 import {Listener} from "./library/Listener";
 import * as url from "url";
 
@@ -7,8 +7,17 @@ import Method from "./library/Method";
 import {NextRequestListener} from "./library/RequestListener";
 import Context from "./library/Context";
 
+class RouteContext extends Context {
+	parameters: { [key: string]: string };
+
+	static from(ctx: Context, parameters: { [key: string]: string }) {
+		return Object.create(new RouteContext(ctx), {parameters: {value: parameters}});
+	}
+
+}
+
 type RouteMatcher = string | RegExp;
-type RouteHandler = NextRequestListener;
+type RouteHandler = (ctx: RouteContext, result: any) => any;
 
 export class Router {
 	protected _handlers: Map<Method, Map<RouteMatcher, { pattern: RegExp, handler: RouteHandler }>>;
@@ -70,10 +79,10 @@ export class Router {
 		const anUrl = url.parse(ctx.request.url);
 		const [handler, parameters] = this.getRouterHandler(ctx.request.method, anUrl.pathname) || [];
 		if (handler) {
-			ctx.parameters = Object.assign({}, parameters);
+			const routeContext = RouteContext.from(ctx, parameters);
 			return new Promise((resolve, reject) => {
 				try {
-					resolve(handler(ctx, result));
+					resolve(handler(routeContext, result));
 				} catch (error) {
 					reject(error);
 				}
@@ -102,13 +111,3 @@ export class Router {
 }
 
 export default Router;
-
-const router = new Router();
-
-
-
-
-
-
-
-

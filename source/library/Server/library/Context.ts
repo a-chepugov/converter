@@ -3,23 +3,12 @@ import {IncomingMessage, ServerResponse} from "http";
 export class Context {
 	readonly request: IncomingMessage;
 	readonly response: ServerResponse;
-	private _parameters: { [key: string]: string };
 
-	constructor(request: IncomingMessage, response: ServerResponse) {
+	constructor({request, response}: { request: IncomingMessage, response: ServerResponse }) {
 		this.request = request;
 		this.response = response;
-		this._parameters = {};
 		Object.freeze(this);
 	}
-
-	get parameters() {
-		return this._parameters;
-	};
-
-	set parameters(parameters: { [key: string]: string }) {
-		Object.assign(this._parameters, parameters);
-		Object.freeze(this._parameters);
-	};
 
 	send = (payload: any) => this.response.end(payload.toString())
 

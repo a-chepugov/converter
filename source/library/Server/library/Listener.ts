@@ -46,7 +46,7 @@ export class Listener {
 	}
 
 	listen: RequestListener = (request: IncomingMessage, response: ServerResponse) => {
-		const ctx = new Context(request, response);
+		const ctx = new Context({request, response});
 		return this.bundle(ctx, undefined)
 			.then((result: any) => {
 				if (!ctx.response.finished) {
