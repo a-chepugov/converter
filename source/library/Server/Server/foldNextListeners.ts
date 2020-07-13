@@ -1,4 +1,4 @@
-import Next from "./Next";
+import Next from "../library/Next";
 
 import {NextRequestListener} from "./RequestListener";
 import Context from "./Context";

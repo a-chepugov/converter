@@ -3,6 +3,7 @@ import {RequestListener, NextRequestListener} from "./RequestListener";
 import foldNextListeners from "./foldNextListeners";
 
 import Context from "./Context";
+export {Context} from "./Context";
 
 export class Listener {
 	private listeners: Set<NextRequestListener>;

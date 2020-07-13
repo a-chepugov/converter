@@ -10,7 +10,8 @@ const router = new Router()
 		version: packageJson.version,
 		description: packageJson.description
 	}))
-	.on('get', '/ping', (ctx) => (ctx.send('pong')))
+	.on('get', '/ping', () => 'pong')
+	.on('get', '/ping/:pong', (ctx) => ctx.parameters.pong)
 	.on('get', '/uptime', (ctx) => (ctx.send((Date.now() - start))))
 	.on('get', '/favicon.ico', () => Promise.reject(Object.assign(new Error(), {code: 421})))
 

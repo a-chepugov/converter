@@ -1,5 +1,3 @@
-export {Server} from './Server';
-export {default as default} from './Server';
-export {Router} from './Router';
-export {Context} from './library/Context';
-export {Method} from './library/Method';
+export {default, Server, Context} from './Server';
+export {Router, Context as RouterContext} from './Router';
+export {Method} from './Router/Method';

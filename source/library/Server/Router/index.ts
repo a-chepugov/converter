@@ -1,23 +1,17 @@
-import {IncomingMessage, ServerResponse, STATUS_CODES} from "http";
-import {Listener} from "./library/Listener";
+import {STATUS_CODES} from "http";
 import * as url from "url";
 
-import Method from "./library/Method";
+import Method from "./Method";
 
-import {NextRequestListener} from "./library/RequestListener";
-import Context from "./library/Context";
+import {NextRequestListener} from "../Server/RequestListener";
+import {Listener, Context as ListenerContext} from "../Server/Listener";
 
-class RouteContext extends Context {
-	parameters: { [key: string]: string };
+import {Context} from "./Context";
 
-	static from(ctx: Context, parameters: { [key: string]: string }) {
-		return Object.create(new RouteContext(ctx), {parameters: {value: parameters}});
-	}
-
-}
+export {Context} from "./Context";
 
 type RouteMatcher = string | RegExp;
-type RouteHandler = (ctx: RouteContext, result: any) => any;
+type RouteHandler = (ctx: Context, result: any) => any;
 
 export class Router {
 	protected _handlers: Map<Method, Map<RouteMatcher, { pattern: RegExp, handler: RouteHandler }>>;
@@ -75,11 +69,11 @@ export class Router {
 		return this;
 	}
 
-	listen: NextRequestListener = (ctx: Context, result: any) => {
+	listen: NextRequestListener = (ctx: ListenerContext, result: any) => {
 		const anUrl = url.parse(ctx.request.url);
 		const [handler, parameters] = this.getRouterHandler(ctx.request.method, anUrl.pathname) || [];
 		if (handler) {
-			const routeContext = RouteContext.from(ctx, parameters);
+			const routeContext = Context.from(ctx, parameters);
 			return new Promise((resolve, reject) => {
 				try {
 					resolve(handler(routeContext, result));
