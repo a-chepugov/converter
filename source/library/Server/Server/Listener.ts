@@ -11,12 +11,12 @@ export class Listener {
 	protected readonly listeners: Set<ContextListener>;
 	protected bundle: ContextListener;
 	protected setter: (request: IncomingMessage, response: ServerResponse) => any;
-	public interceptor: (ctx: Context, error: any) => any;
+	protected _interceptor: (ctx: Context, error: any) => any;
 
 	constructor(listeners?: Iterable<ContextListener>) {
 		this.listeners = new Set(listeners);
 		this.bundle = Listener.build(this.listeners);
-		this.interceptor = (ctx: Context, error: any) => {
+		this.interceptor((ctx: Context, error: any) => {
 			try {
 				if (!ctx.response.finished) {
 					ctx.response.statusCode = error?.code ? error.code : 500;
@@ -27,6 +27,14 @@ export class Listener {
 			} catch (error) {
 				console.error(error);
 			}
+		})
+	}
+
+	interceptor(interceptor: (ctx: Context, error: any) => any) {
+		if (typeof interceptor === 'function') {
+			this._interceptor = interceptor;
+		} else {
+			throw new Error('Interceptor mush be a function');
 		}
 	}
 
@@ -74,7 +82,7 @@ export class Listener {
 					}
 				}
 			})
-			.catch((error: any) => this.interceptor(ctx, error))
+			.catch((error: any) => this._interceptor(ctx, error))
 	}
 }
 
