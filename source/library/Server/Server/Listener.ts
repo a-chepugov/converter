@@ -8,9 +8,9 @@ import {Context, ContextListener} from "./Context";
 export {Context, ContextListener} from "./Context";
 
 export class Listener {
-	private readonly listeners: Set<ContextListener>;
-	private bundle: ContextListener;
-	private setter: (request: IncomingMessage, response: ServerResponse) => any;
+	protected readonly listeners: Set<ContextListener>;
+	protected bundle: ContextListener;
+	protected setter: (request: IncomingMessage, response: ServerResponse) => any;
 	public interceptor: (ctx: Context, error: any) => any;
 
 	constructor(listeners?: Iterable<ContextListener>) {
