@@ -1,6 +1,6 @@
 import ReadableStream = NodeJS.ReadableStream;
 
-export const toString = (stream: ReadableStream) =>
+export const toString = (stream: ReadableStream): Promise<string> =>
 	new Promise((resolve, reject) => {
 		let accumulator = '';
 		stream

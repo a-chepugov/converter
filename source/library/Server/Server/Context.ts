@@ -1,4 +1,6 @@
 import {IncomingMessage, ServerResponse} from "http";
+import {Parser} from "./Parser";
+import {Sender} from "./Sender";
 
 export class Context {
 	readonly request: IncomingMessage;
@@ -10,13 +12,14 @@ export class Context {
 		Object.freeze(this);
 	}
 
-	send = (payload: any) => this.response.end(payload.toString())
-
-	json = (payload: any) => {
-		const result = JSON.stringify(payload);
-		this.response.setHeader('Content-Type', 'application/json');
-		this.response.end(result);
+	parse = (type?: string) => {
+		return Parser.of(type).execute(this.request);
 	}
+
+	send = (payload: any, type?: string) => {
+		return Sender.of(type).execute(payload, this.response);
+	}
+
 }
 
 export default Context;

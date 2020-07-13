@@ -11,31 +11,24 @@ const profilerConvert = ProfilerDate.of('Photos.convert')
 
 const photos = new Photos();
 
-export function convert(ctx: Context) {
+export function convert(ctx: Context, body: { [key: string]: any }) {
 	const profiler = profilerConvert.start();
-	return toJSON(ctx.request)
+	const {input, output, format, area, presets, meta} = body;
+	return photos
+		.convert(input, output, format, area, presets, meta as Meta)
+		.then((response: any) => {
+			ctx.response.setHeader('X-COMPLETED-IN', profiler.end().result);
+			return response;
+		})
 		.catch((error) => {
-			error.status = 400;
+			if (error instanceof AccessError) {
+				error.code = 403;
+			}
+			if (error instanceof ConvertError) {
+				error
+					.obscure('Conversion error. Code: ' + error.code)
+					.code = 500;
+			}
 			throw error;
-		})
-		.then((body) => {
-			const {input, output, format, area, presets, meta} = body;
-			return photos
-				.convert(input, output, format, area, presets, meta as Meta)
-				.then((response: any) => {
-					ctx.response.setHeader('X-COMPLETED-IN', profiler.end().result);
-					return response;
-				})
-				.catch((error) => {
-					if (error instanceof AccessError) {
-						error.code = 403;
-					}
-					if (error instanceof ConvertError) {
-						error
-							.obscure('Conversion error. Code: ' + error.code)
-							.code = 500;
-					}
-					throw error;
-				});
-		})
+		});
 }

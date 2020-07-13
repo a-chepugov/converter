@@ -1,8 +1,10 @@
-import {IncomingMessage, ServerResponse, STATUS_CODES} from "http";
+import {STATUS_CODES} from "http";
 import {RequestListener, NextRequestListener} from "./RequestListener";
 import foldNextListeners from "./foldNextListeners";
 
 import Context from "./Context";
+import {Stream} from "stream";
+
 export {Context} from "./Context";
 
 export class Listener {
@@ -46,18 +48,23 @@ export class Listener {
 		return this;
 	}
 
-	listen: RequestListener = (request: IncomingMessage, response: ServerResponse) => {
+	listen: RequestListener = (request, response) => {
 		const ctx = new Context({request, response});
 		return this.bundle(ctx, undefined)
 			.then((result: any) => {
 				if (!ctx.response.finished) {
 					switch (true) {
+						case typeof result === 'string':
 						case result instanceof Buffer:
-							return result.pipe(ctx.response);
+							return ctx.send(result);
+						case result instanceof Stream:
+							return ctx.send(result, 'stream');
+						case typeof result === 'object' && Object.getPrototypeOf(result) === Object.prototype:
+							return ctx.send(result, 'json');
 						case typeof result?.toString === 'function':
-							return ctx.response.end(result.toString());
+							return ctx.send(result, 'stringable');
 						default:
-							return ctx.response.end(result);
+							return ctx.send(result);
 					}
 				}
 			})
