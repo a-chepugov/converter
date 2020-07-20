@@ -9,13 +9,18 @@ export class Parser<T> {
 		this.strategy = strategy;
 	}
 
+	static registry = new Map<string, ParseConstructor<any>>();
+
+	static register(name: string, strategy: ParseConstructor<any>) {
+		Parser.registry.set(name, strategy);
+		return Parser;
+	}
+
 	static of(type = 'base') {
-		switch (type) {
-			case 'json':
-				return new Parser(json);
-			case 'base':
-			default:
-				return new Parser(base);
+		if (Parser.registry.has(type)) {
+			return new Parser(Parser.registry.get(type));
+		} else {
+			return new Parser(base);
 		}
 	}
 
@@ -23,5 +28,9 @@ export class Parser<T> {
 		return new this.strategy().parse(source);
 	}
 }
+
+Parser
+	.register('base', base)
+	.register('json', json)
 
 export default Parser;

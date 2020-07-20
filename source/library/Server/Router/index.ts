@@ -1,10 +1,10 @@
 import {STATUS_CODES} from "http";
 import * as url from "url";
 
-import Method from "./Method";
+import Method from "../Method";
 
 import {ContextListener} from "../Server";
-import {Controller, Context as ListenerContext} from "../Server/Controller";
+import {Controller, Context as ControllerContext} from "../Server/Controller";
 
 import {Context} from "./Context";
 
@@ -69,7 +69,7 @@ export class Router {
 		return this;
 	}
 
-	listen: ContextListener = (ctx: ListenerContext, result: any) => {
+	listen: ContextListener = (ctx: ControllerContext, result: any) => {
 		const anUrl = url.parse(ctx.request.url);
 		const [handler, parameters] = this.getRouterHandler(ctx.request.method, anUrl.pathname) || [];
 		if (handler) {

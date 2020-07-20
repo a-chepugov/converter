@@ -10,14 +10,13 @@ export {Context, ContextListener} from "./Context";
 export class Controller {
 	protected readonly listeners: Set<ContextListener>;
 	protected bundle: ContextListener;
-	protected setter: (request: IncomingMessage, response: ServerResponse) => any;
-	protected _ContextFactory: (request: IncomingMessage, response: ServerResponse) => Context;
+	protected _state: (request: IncomingMessage, response: ServerResponse) => any;
 	protected _interceptor: (ctx: any, error: any) => any;
 
 	constructor(listeners?: Iterable<ContextListener>) {
 		this.listeners = new Set(listeners);
 		this.bundle = Controller.build(this.listeners);
-		this._ContextFactory = Context.of;
+		this._state = () => undefined;
 		this.interceptor((ctx: Context, error: any) => {
 			try {
 				if (!ctx.response.finished) {
@@ -40,11 +39,20 @@ export class Controller {
 		}
 	}
 
-	with(setter: (request: IncomingMessage, response: ServerResponse) => any) {
-		if (typeof setter === 'function') {
-			this.setter = setter;
+	install(plugin: (this: this) => void) {
+		if (typeof plugin === 'function') {
+			plugin.call(this);
+			return this;
 		} else {
-			throw new Error('Extractor must be a function');
+			throw new Error('plugin must be a function');
+		}
+	}
+
+	state(setter: (request: IncomingMessage, response: ServerResponse) => any) {
+		if (typeof setter === 'function') {
+			this._state = setter;
+		} else {
+			throw new Error('State setter must be a function');
 		}
 	}
 
@@ -68,10 +76,28 @@ export class Controller {
 	}
 
 	listen: RequestListener = (request, response) => {
-		const ctx = this._ContextFactory(request, response);
+		const ctx = Context.of(request, response, Object.seal(this._state(request, response)));
 		return this.bundle(ctx, undefined)
 			.then((result: any) => ctx.response.finished ? undefined : ctx.send(result))
 			.catch((error: any) => this._interceptor(ctx, error))
+	}
+
+	static install(plugin: (constructor: typeof Controller.prototype.constructor) => void) {
+		if (typeof plugin === 'function') {
+			plugin(Controller);
+		} else {
+			throw new Error('plugin must be a function');
+		}
+		return Controller;
+	}
+
+	static context(plugin: (constructor: typeof Context.prototype.constructor) => void) {
+		if (typeof plugin === 'function') {
+			Context.install(plugin);
+		} else {
+			throw new Error('plugin must be a function');
+		}
+		return Controller;
 	}
 }
 

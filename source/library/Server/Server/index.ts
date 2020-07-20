@@ -1,11 +1,10 @@
 import * as http from 'http';
 
 import {RequestListener, Controller, Context, ContextListener} from "./Controller";
-import {IncomingMessage, ServerResponse} from "http";
 
-export {Context, ContextListener} from "./Controller";
+export {RequestListener, Controller, Context, ContextListener} from "./Controller";
 
-class ServerCore {
+export class ServerCore {
 	protected readonly _listener: RequestListener;
 	protected readonly _server: http.Server;
 	protected _port: number;
@@ -47,11 +46,11 @@ class ServerCore {
 }
 
 export class Server extends ServerCore {
-	protected readonly listener: Controller;
+	protected readonly controller: Controller;
 
-	constructor(listener: Controller) {
-		super(listener.listen);
-		this.listener = listener;
+	private constructor(controller: Controller) {
+		super(controller.listen);
+		Object.defineProperty(this, 'controller', {value: controller});
 	}
 
 	static create(listeners?: Iterable<ContextListener>) {
@@ -59,24 +58,51 @@ export class Server extends ServerCore {
 		return new Server(listener);
 	}
 
-	interceptor = (interceptor: (ctx: Context, error: any) => void) => {
-		this.listener.interceptor(interceptor);
-		return this;
-	}
-
-	with = (setter: (request: IncomingMessage, response: ServerResponse) => any) => {
-		this.listener.with(setter);
+	state = (setter: (request: http.IncomingMessage, response: http.ServerResponse) => any) => {
+		this.controller.state(setter);
 		return this;
 	};
 
+	interceptor = (interceptor: (ctx: Context, error: any) => void) => {
+		this.controller.interceptor(interceptor);
+		return this;
+	}
+
 	use = (nextRequestListener: ContextListener) => {
-		this.listener.register(nextRequestListener);
+		this.controller.register(nextRequestListener);
 		return this;
 	}
 
 	unuse = (nextRequestListener: ContextListener) => {
-		this.listener.unregister(nextRequestListener);
+		this.controller.unregister(nextRequestListener);
 		return this;
+	}
+
+	static install(plugin: (constructor: typeof Server.prototype.constructor) => void) {
+		if (typeof plugin === 'function') {
+			plugin(Server);
+		} else {
+			throw new Error('plugin must be a function');
+		}
+		return Server;
+	}
+
+	static controller(plugin: (constructor: typeof Controller.prototype.constructor) => void) {
+		if (typeof plugin === 'function') {
+			Controller.install(plugin);
+		} else {
+			throw new Error('plugin must be a function');
+		}
+		return Server;
+	}
+
+	static context(plugin: (constructor: typeof Context.prototype.constructor) => void) {
+		if (typeof plugin === 'function') {
+			Controller.context(plugin);
+		} else {
+			throw new Error('plugin must be a function');
+		}
+		return Server;
 	}
 }
 
