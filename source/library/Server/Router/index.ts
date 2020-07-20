@@ -4,7 +4,7 @@ import * as url from "url";
 import Method from "./Method";
 
 import {ContextListener} from "../Server";
-import {Listener, Context as ListenerContext} from "../Server/Listener";
+import {Controller, Context as ListenerContext} from "../Server/Controller";
 
 import {Context} from "./Context";
 
@@ -64,7 +64,7 @@ export class Router {
 	}
 
 	on = (method: Method, matcher: RouteMatcher, ...listeners: RouteHandler[]) => {
-		const listener = listeners.length === 1 ? listeners[0] : Listener.build(listeners);
+		const listener = listeners.length === 1 ? listeners[0] : Controller.build(listeners);
 		this.setRouterHandler(method, matcher, listener);
 		return this;
 	}

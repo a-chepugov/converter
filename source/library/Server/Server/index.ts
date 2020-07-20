@@ -1,9 +1,9 @@
 import * as http from 'http';
 
-import {RequestListener, Listener, Context, ContextListener} from "./Listener";
+import {RequestListener, Controller, Context, ContextListener} from "./Controller";
 import {IncomingMessage, ServerResponse} from "http";
 
-export {Context, ContextListener} from "./Listener";
+export {Context, ContextListener} from "./Controller";
 
 class ServerCore {
 	protected readonly _listener: RequestListener;
@@ -47,15 +47,15 @@ class ServerCore {
 }
 
 export class Server extends ServerCore {
-	protected readonly listener: Listener;
+	protected readonly listener: Controller;
 
-	constructor(listener: Listener) {
+	constructor(listener: Controller) {
 		super(listener.listen);
 		this.listener = listener;
 	}
 
 	static create(listeners?: Iterable<ContextListener>) {
-		const listener = new Listener(listeners);
+		const listener = new Controller(listeners);
 		return new Server(listener);
 	}
 

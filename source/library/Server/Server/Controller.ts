@@ -7,7 +7,7 @@ import {Context, ContextListener} from "./Context";
 
 export {Context, ContextListener} from "./Context";
 
-export class Listener {
+export class Controller {
 	protected readonly listeners: Set<ContextListener>;
 	protected bundle: ContextListener;
 	protected setter: (request: IncomingMessage, response: ServerResponse) => any;
@@ -15,7 +15,7 @@ export class Listener {
 
 	constructor(listeners?: Iterable<ContextListener>) {
 		this.listeners = new Set(listeners);
-		this.bundle = Listener.build(this.listeners);
+		this.bundle = Controller.build(this.listeners);
 		this.interceptor((ctx: Context, error: any) => {
 			try {
 				if (!ctx.response.finished) {
@@ -55,13 +55,13 @@ export class Listener {
 
 	register = (listener: ContextListener) => {
 		this.listeners.add(listener);
-		this.bundle = Listener.build(this.listeners.values());
+		this.bundle = Controller.build(this.listeners.values());
 		return this;
 	}
 
 	unregister = (listener: ContextListener) => {
 		this.listeners.delete(listener);
-		this.bundle = Listener.build(this.listeners.values());
+		this.bundle = Controller.build(this.listeners.values());
 		return this;
 	}
 
@@ -86,4 +86,4 @@ export class Listener {
 	}
 }
 
-export default Listener;
+export default Controller;

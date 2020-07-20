@@ -1,4 +1,4 @@
-import {Context as ListenerContext} from "../Server/Listener";
+import {Context as ListenerContext} from "../Server/Controller";
 
 export class Context extends ListenerContext {
 	parameters: { [key: string]: string };
