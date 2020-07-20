@@ -11,11 +11,13 @@ export class Controller {
 	protected readonly listeners: Set<ContextListener>;
 	protected bundle: ContextListener;
 	protected setter: (request: IncomingMessage, response: ServerResponse) => any;
-	protected _interceptor: (ctx: Context, error: any) => any;
+	protected _ContextFactory: (request: IncomingMessage, response: ServerResponse) => Context;
+	protected _interceptor: (ctx: any, error: any) => any;
 
 	constructor(listeners?: Iterable<ContextListener>) {
 		this.listeners = new Set(listeners);
 		this.bundle = Controller.build(this.listeners);
+		this._ContextFactory = Context.of;
 		this.interceptor((ctx: Context, error: any) => {
 			try {
 				if (!ctx.response.finished) {
@@ -66,22 +68,9 @@ export class Controller {
 	}
 
 	listen: RequestListener = (request, response) => {
-		const state = this.setter ? this.setter(request, response) : {};
-		const ctx = Context.of(request, response, state);
-
+		const ctx = this._ContextFactory(request, response);
 		return this.bundle(ctx, undefined)
-			.then((result: any) => {
-				if (!ctx.response.finished) {
-					switch (true) {
-						case typeof result === 'object' && Object.getPrototypeOf(result) === Object.prototype:
-							return ctx.send(result, 'json');
-						case typeof result?.toString === 'function':
-							return ctx.send(result, 'stringable');
-						default:
-							return ctx.send(result);
-					}
-				}
-			})
+			.then((result: any) => ctx.response.finished ? undefined : ctx.send(result))
 			.catch((error: any) => this._interceptor(ctx, error))
 	}
 }

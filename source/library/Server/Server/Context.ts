@@ -5,18 +5,15 @@ import {Sender} from "./Sender";
 export class Context {
 	readonly request: IncomingMessage;
 	readonly response: ServerResponse;
-	readonly state: any;
 
-	constructor({request, response, state}: { request: IncomingMessage, response: ServerResponse, state?: any }) {
+	constructor({request, response}: { request: IncomingMessage, response: ServerResponse }) {
 		this.request = request;
 		this.response = response;
-		this.state = (state === null || state === undefined ? {} : state);
-		Object.seal(this.state);
 		Object.freeze(this);
 	}
 
-	static of(request: IncomingMessage, response: ServerResponse, state: any) {
-		return new Context({request, response, state});
+	static of(request: IncomingMessage, response: ServerResponse) {
+		return new Context({request, response});
 	}
 
 	parse = (type?: string) => {
@@ -24,6 +21,17 @@ export class Context {
 	}
 
 	send = (payload: any, type?: string) => {
+		if (!type) {
+			switch (true) {
+				case typeof payload === 'object' && Object.getPrototypeOf(payload) === Object.prototype:
+					type = 'json';
+					break;
+				case typeof payload?.toString === 'function':
+					type = 'stringable';
+					break;
+			}
+		}
+
 		return Sender.of(type).execute(this.response, payload);
 	}
 
@@ -31,4 +39,4 @@ export class Context {
 
 export default Context;
 
-export type ContextListener = (ctx: Context, result: any) => any;
+export type ContextListener = (ctx: any, result: any) => any;
