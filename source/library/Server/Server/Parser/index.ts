@@ -1,5 +1,5 @@
 import {Parse} from "./interface";
-import {Registry} from "../Registry";
+import {Registry} from "../../library/Registry";
 
 export class Parser {
 	static registry = new Registry<string, Parse<any, any>>();

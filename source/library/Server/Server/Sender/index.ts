@@ -1,5 +1,5 @@
 import {Send} from "./interface";
-import {Registry} from "../Registry";
+import {Registry} from "../../library/Registry";
 
 export class Sender {
 	static registry = new Registry<string, Send<any, any>>();
