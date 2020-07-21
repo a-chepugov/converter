@@ -17,17 +17,12 @@ export class Controller {
 		this.listeners = new Set(listeners);
 		this.bundle = Controller.build(this.listeners);
 		this._state = () => undefined;
-		this.interceptor((ctx: Context, error: any) => {
-			try {
-				if (!ctx.response.finished) {
-					ctx.response.statusCode = error?.code ? error.code : 500;
-					ctx.response.end(error?.message ? error.message : STATUS_CODES[ctx.response.statusCode]);
-				}
-				error.message += `: ${ctx.request.url}`;
-				console.error(error);
-			} catch (error) {
-				console.error(error);
+		this.interceptor((ctx: Context, error: { code?: number, reason?: string }) => {
+			if (!ctx.response.finished) {
+				ctx.response.statusCode = error?.code ? error.code : 500;
+				ctx.response.end(error?.reason ? error.reason : STATUS_CODES[ctx.response.statusCode]);
 			}
+			console.error(error);
 		})
 	}
 

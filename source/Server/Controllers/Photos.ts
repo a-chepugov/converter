@@ -22,15 +22,16 @@ export function convert(ctx: Context, body: { [key: string]: any }) {
 		})
 		.catch((error) => {
 			if (error instanceof AccessError) {
+				error.reason = error.message;
 				error.code = 403;
 			}
 			if (error instanceof InvalidPresetError) {
+				error.reason = error.message;
 				error.code = 422;
 			}
 			if (error instanceof ConvertError) {
-				error
-					.obscure('Conversion error. Code: ' + error.code)
-					.code = 500;
+				error.reason = 'Conversion error. Code: ' + error.code;
+				error.code = 500;
 			}
 			throw error;
 		});
