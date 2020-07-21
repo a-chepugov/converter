@@ -1,36 +1,30 @@
-import {ParseConstructor} from "./interface";
-import base from "./base";
-import json from "./json";
+import {Parse} from "./interface";
+import {Registry} from "../Registry";
 
-export class Parser<T> {
-	private readonly strategy: ParseConstructor<T>;
+export class Parser {
+	static registry = new Registry<string, Parse<any, any>>();
 
-	constructor(strategy: ParseConstructor<T>) {
-		this.strategy = strategy;
-	}
-
-	static registry = new Map<string, ParseConstructor<any>>();
-
-	static register(name: string, strategy: ParseConstructor<any>) {
+	static register(name: string, strategy: Parse<any, any>) {
 		Parser.registry.set(name, strategy);
 		return Parser;
 	}
 
-	static of(type = 'base') {
+	static of(type?: string) {
 		if (Parser.registry.has(type)) {
-			return new Parser(Parser.registry.get(type));
+			return Parser.registry.get(type);
 		} else {
-			return new Parser(base);
+			return Parser.registry.get('base');
 		}
 	}
 
-	execute(source: any) {
-		return new this.strategy().parse(source);
-	}
 }
+
+export default Parser;
+
+import base from "./base";
+import json from "./json";
 
 Parser
 	.register('base', base)
 	.register('json', json)
-
-export default Parser;
+;

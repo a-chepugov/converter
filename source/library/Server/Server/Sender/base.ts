@@ -1,15 +1,11 @@
 import {ServerResponse} from "http";
 import {Send} from "./interface";
 
-export class base<T> implements Send<T>{
-	protected readonly response: ServerResponse;
+export class base<T> implements Send<ServerResponse, T> {
+	static send = <T>(response: ServerResponse, payload: T): any => response.end(payload);
 
-	constructor(response: ServerResponse) {
-		this.response = response;
-	}
-
-	send(payload: T) {
-		return this.response.end(payload);
+	send(response: ServerResponse, payload: T) {
+		return base.send(response, payload);
 	};
 }
 

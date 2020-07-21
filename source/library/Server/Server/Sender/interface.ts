@@ -1,9 +1,5 @@
-export interface Send<T> {
-	send(payload: T): any;
-}
-
-export interface SendConstructor<T> {
-	new(...args: any[]): Send<T>;
+export interface Send<TARGET, PAYLOAD> {
+	send(target: TARGET, payload: PAYLOAD): any;
 }
 
 export default Send;

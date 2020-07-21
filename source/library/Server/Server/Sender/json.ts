@@ -1,10 +1,15 @@
-import base from './base'
+import {Send} from './interface'
+import {ServerResponse} from "http";
 
-export class json extends base<Object> {
-	send = (payload: Object) => {
+export class json implements Send<ServerResponse, Object> {
+	static send = (response: ServerResponse, payload: Object) => {
 		const result = JSON.stringify(payload);
-		this.response.setHeader('Content-Type', 'application/json');
-		return this.response.end(result);
+		response.setHeader('Content-Type', 'application/json');
+		return response.end(result);
+	}
+
+	send(response: ServerResponse, payload: Object) {
+		return json.send(response, payload);
 	}
 }
 

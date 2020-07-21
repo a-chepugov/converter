@@ -2,9 +2,11 @@ import {IncomingMessage} from "http";
 import {Parse} from "./interface";
 import {toString} from "../../library/Stream";
 
-export class base implements Parse<Promise<string>> {
-	parse(source: IncomingMessage): Promise<string> {
-		return toString(source);
+export class base implements Parse<IncomingMessage, Promise<string>> {
+	static parse = (source: IncomingMessage) => toString(source);
+
+	parse(source: IncomingMessage) {
+		return base.parse(source);
 	};
 }
 

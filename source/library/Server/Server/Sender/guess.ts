@@ -1,28 +1,33 @@
-import base from './base'
+import {Send} from './interface'
 import json from "./json";
+import base from "./base";
 import stringable from "./stringable";
 
-import ReadableStream = NodeJS.ReadableStream;
+import {ServerResponse} from "http";
 
-export class guess extends base<ReadableStream> {
-	send = (payload: ReadableStream) => {
-		const type = this.typeOf(payload);
-		const sender = this.init(type);
-		return sender.send(payload);
+export class guess implements Send<ServerResponse, any> {
+	static send = (response: ServerResponse, payload: any) => {
+		const type = guess.typeOf(payload);
+		const sender = guess.init(type);
+		return sender.send(response, payload);
 	}
 
-	protected init = (type: string) => {
+	send(response: ServerResponse, payload: any) {
+		return guess.send(response, payload);
+	}
+
+	static init = (type: string) => {
 		switch (type) {
 			case 'json':
-				return new json(this.response);
+				return json;
 			case 'stringable':
-				return new json(this.response);
+				return stringable;
 			default:
-				return new base(this.response);
+				return base;
 		}
 	}
 
-	protected typeOf = (payload: any) => {
+	static typeOf = (payload: any) => {
 		switch (true) {
 			case typeof payload === 'object' && Object.getPrototypeOf(payload) === Object.prototype:
 				return 'json';

@@ -2,6 +2,9 @@ import {IncomingMessage, ServerResponse} from "http";
 import {Parser} from "./Parser";
 import {Sender} from "./Sender";
 
+export {Parser} from "./Parser";
+export {Sender} from "./Sender";
+
 export class Context {
 	readonly request: IncomingMessage;
 	readonly response: ServerResponse;
@@ -18,21 +21,17 @@ export class Context {
 		return new Context({request, response, state});
 	}
 
-	parse = (type?: string) => {
-		return Parser.of(type).execute(this.request);
+	parse(type?: string) {
+		return Parser.of(type).parse(this.request);
 	}
 
-	static parse = (type?: string) => (ctx: Context) => {
-		return Parser.of(type).execute(ctx.request);
+	static parse = (type?: string) => (ctx: Context): any => Parser.of(type).parse(ctx.request);
+
+	send(payload: any, type?: string) {
+		return Sender.of(type).send(this.response, payload);
 	}
 
-	send = (payload: any, type?: string) => {
-		return Sender.of(type).execute(this.response, payload);
-	}
-
-	static send = (type?: string) => (ctx: Context, payload: any) => {
-		return Sender.of(type).execute(ctx.response, payload);
-	}
+	static send = (type?: string) => (ctx: Context, payload: any) => Sender.of(type).send(ctx.response, payload);
 
 	static install(plugin: (constructor: typeof Context.prototype.constructor) => void) {
 		if (typeof plugin === 'function') {

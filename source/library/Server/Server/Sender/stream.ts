@@ -1,9 +1,13 @@
-import base from './base'
-import ReadableStream = NodeJS.ReadableStream;
+import {Send} from './interface'
 
-export class stream extends base<ReadableStream> {
-	send = (payload: ReadableStream) => {
-		return payload.pipe(this.response);
+type ReadableStream = NodeJS.ReadableStream;
+import {ServerResponse} from "http";
+
+export class stream implements Send<ServerResponse, ReadableStream> {
+	static send = <T extends ReadableStream>(response: ServerResponse, payload: T) => payload.pipe(response);
+
+	send(response: ServerResponse, payload: ReadableStream) {
+		return stream.send(response, payload);
 	}
 }
 
