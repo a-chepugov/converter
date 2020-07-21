@@ -2,7 +2,7 @@ import {Send} from "./interface";
 import {Registry} from "../../library/Registry";
 
 export class Sender {
-	static registry = new Registry<string, Send<any, any>>();
+	private static registry = new Registry<string, Send<any, any>>();
 
 	static register(name: string, strategy: Send<any, any>) {
 		Sender.registry.set(name, strategy);
