@@ -33,7 +33,7 @@ export class Context {
 
 	static send = (type?: string) => (ctx: Context, payload: any) => Sender.of(type).send(ctx.response, payload);
 
-	static install(plugin: (constructor: typeof Context.prototype.constructor) => void) {
+	static install(plugin: (constructor: typeof Context) => void) {
 		if (typeof plugin === 'function') {
 			plugin(Context);
 		} else {

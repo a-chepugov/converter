@@ -78,7 +78,7 @@ export class Server extends ServerCore {
 		return this;
 	}
 
-	static install(plugin: (constructor: typeof Server.prototype.constructor) => void) {
+	static install(plugin: (constructor: typeof Server) => void) {
 		if (typeof plugin === 'function') {
 			plugin(Server);
 		} else {
@@ -87,7 +87,7 @@ export class Server extends ServerCore {
 		return Server;
 	}
 
-	static controller(plugin: (constructor: typeof Controller.prototype.constructor) => void) {
+	static controller(plugin: (constructor: typeof Controller) => void) {
 		if (typeof plugin === 'function') {
 			Controller.install(plugin);
 		} else {
@@ -96,7 +96,7 @@ export class Server extends ServerCore {
 		return Server;
 	}
 
-	static context(plugin: (constructor: typeof Context.prototype.constructor) => void) {
+	static context(plugin: (constructor: typeof Context) => void) {
 		if (typeof plugin === 'function') {
 			Controller.context(plugin);
 		} else {

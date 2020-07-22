@@ -77,7 +77,7 @@ export class Controller {
 			.catch((error: any) => this._interceptor(ctx, error))
 	}
 
-	static install(plugin: (constructor: typeof Controller.prototype.constructor) => void) {
+	static install(plugin: (constructor: typeof Controller) => void) {
 		if (typeof plugin === 'function') {
 			plugin(Controller);
 		} else {
@@ -86,7 +86,7 @@ export class Controller {
 		return Controller;
 	}
 
-	static context(plugin: (constructor: typeof Context.prototype.constructor) => void) {
+	static context(plugin: (constructor: typeof Context) => void) {
 		if (typeof plugin === 'function') {
 			Context.install(plugin);
 		} else {
