@@ -42,13 +42,8 @@ export class Context {
 		}
 	}
 
-	modify(modifier: (this: this) => any) {
-		if (typeof modifier === 'function') {
-			modifier.call(this);
-			return this;
-		} else {
-			throw new Error('modifier must be a function');
-		}
+	overlay(extra: { [key: string]: any }) {
+		return Object.create(this, extra);
 	}
 }
 

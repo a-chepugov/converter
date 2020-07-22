@@ -3,12 +3,9 @@ import * as url from "url";
 
 import Method from "../Method";
 
-import {ContextListener} from "../Server";
-import {Controller, Context as ControllerContext} from "../Server/Controller";
+import {Controller, Context, ContextListener} from "../Server/Controller";
 
-import {Context} from "./Context";
-
-export {Context} from "./Context";
+import "./Context";
 
 type RouteMatcher = string | RegExp;
 type RouteHandler = (ctx: Context, result: any) => any;
@@ -69,11 +66,11 @@ export class Router {
 		return this;
 	}
 
-	listen: ContextListener = (ctx: ControllerContext, result: any) => {
+	listen: ContextListener = (ctx: Context, result: any) => {
 		const anUrl = url.parse(ctx.request.url);
 		const [handler, parameters] = this.getRouterHandler(ctx.request.method, anUrl.pathname) || [];
 		if (handler) {
-			const routeContext = Context.from(ctx, parameters);
+			const routeContext = ctx.overlay({parameters: {value: parameters}});
 			return new Promise((resolve, reject) => {
 				try {
 					resolve(handler(routeContext, result));
@@ -83,7 +80,6 @@ export class Router {
 			});
 		} else {
 			const error = new Error(STATUS_CODES[404]);
-			// @ts-ignore
 			error.code = 404;
 			return Promise.reject(error);
 		}
