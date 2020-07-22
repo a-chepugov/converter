@@ -51,7 +51,7 @@ describe('Next', () => {
 		expect(counter).to.be.equal(3)
 	});
 
-	it('unhandled error emerges after execume method invokes', () => {
+	it('unhandled error emerges after execute method invokes', () => {
 		const next = Next.of()
 			.next((_cb: any) => {
 				throw new Error('Unhandled error');
