@@ -123,9 +123,6 @@ export class Server extends ServerCore {
 		}
 	}
 
-	protected qqq() {
-		return 123;
-	}
 }
 
 export default Server;

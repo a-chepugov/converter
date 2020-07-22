@@ -9,13 +9,13 @@ export {Context, ContextListener} from "./Context";
 
 export class Controller {
 	protected readonly listeners: Set<ContextListener>;
-	protected bundle: ContextListener;
+	protected _bundle: ContextListener;
 	protected _state: (request: IncomingMessage, response: ServerResponse) => any;
 	protected _interceptor: (ctx: any, error: any) => any;
 
 	constructor(listeners?: Iterable<ContextListener>) {
 		this.listeners = new Set(listeners);
-		this.bundle = Controller.build(this.listeners);
+		this._bundle = Controller.build(this.listeners);
 		this._state = () => undefined;
 		this.interceptor((ctx: Context, error: { code?: number, reason?: string }) => {
 			if (!ctx.response.finished) {
@@ -43,19 +43,19 @@ export class Controller {
 
 	register = (listener: ContextListener) => {
 		this.listeners.add(listener);
-		this.bundle = Controller.build(this.listeners.values());
+		this._bundle = Controller.build(this.listeners.values());
 		return this;
 	}
 
 	unregister = (listener: ContextListener) => {
 		this.listeners.delete(listener);
-		this.bundle = Controller.build(this.listeners.values());
+		this._bundle = Controller.build(this.listeners.values());
 		return this;
 	}
 
 	listen: RequestListener = (request, response) => {
 		const ctx = Context.of(request, response, Object.seal(this._state(request, response)));
-		return this.bundle(ctx, undefined)
+		return this._bundle(ctx, undefined)
 			.then((result: any) => ctx.response.finished ? undefined : ctx.send(result))
 			.catch((error: any) => this._interceptor(ctx, error))
 	}
