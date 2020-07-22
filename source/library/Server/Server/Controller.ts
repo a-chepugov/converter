@@ -34,23 +34,6 @@ export class Controller {
 		}
 	}
 
-	install(plugin: (this: this) => void) {
-		if (typeof plugin === 'function') {
-			plugin.call(this);
-			return this;
-		} else {
-			throw new Error('plugin must be a function');
-		}
-	}
-
-	state(setter: (request: IncomingMessage, response: ServerResponse) => any) {
-		if (typeof setter === 'function') {
-			this._state = setter;
-		} else {
-			throw new Error('State setter must be a function');
-		}
-	}
-
 	static build = (listeners: Iterable<ContextListener>) => {
 		const folded = foldNextListeners(listeners);
 		return (ctx: Context, initial: any): Promise<any> =>
@@ -77,22 +60,40 @@ export class Controller {
 			.catch((error: any) => this._interceptor(ctx, error))
 	}
 
-	static install(plugin: (constructor: typeof Controller) => void) {
-		if (typeof plugin === 'function') {
-			plugin(Controller);
+	modify(modifier: (this: this) => any) {
+		if (typeof modifier === 'function') {
+			modifier.call(this);
+			return this;
 		} else {
-			throw new Error('plugin must be a function');
+			throw new Error('modifier must be a function');
 		}
-		return Controller;
 	}
 
-	static context(plugin: (constructor: typeof Context) => void) {
+	state(setter: (request: IncomingMessage, response: ServerResponse) => any) {
+		if (typeof setter === 'function') {
+			this._state = setter;
+			return this;
+		} else {
+			throw new Error('State setter must be a function');
+		}
+	}
+
+	static with(plugin: (target: typeof Controller) => any) {
 		if (typeof plugin === 'function') {
-			Context.install(plugin);
+			plugin(Controller);
+			return Controller;
 		} else {
 			throw new Error('plugin must be a function');
 		}
-		return Controller;
+	}
+
+	static context(plugin: (constructor: typeof Context) => any) {
+		if (typeof plugin === 'function') {
+			Context.with(plugin);
+			return Controller;
+		} else {
+			throw new Error('plugin must be a function');
+		}
 	}
 }
 

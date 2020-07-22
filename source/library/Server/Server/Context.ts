@@ -33,13 +33,22 @@ export class Context {
 
 	static send = (type?: string) => (ctx: Context, payload: any) => Sender.of(type).send(ctx.response, payload);
 
-	static install(plugin: (constructor: typeof Context) => void) {
+	static with(plugin: (target: typeof Context) => any) {
 		if (typeof plugin === 'function') {
 			plugin(Context);
+			return Context;
 		} else {
 			throw new Error('plugin must be a function');
 		}
-		return Context;
+	}
+
+	modify(modifier: (this: this) => any) {
+		if (typeof modifier === 'function') {
+			modifier.call(this);
+			return this;
+		} else {
+			throw new Error('modifier must be a function');
+		}
 	}
 }
 

@@ -46,11 +46,11 @@ export class ServerCore {
 }
 
 export class Server extends ServerCore {
-	protected readonly controller: Controller;
+	protected readonly _controller: Controller;
 
 	private constructor(controller: Controller) {
 		super(controller.listen);
-		Object.defineProperty(this, 'controller', {value: controller});
+		Object.defineProperty(this, '_controller', {value: controller});
 	}
 
 	static create(listeners?: Iterable<ContextListener>) {
@@ -58,51 +58,73 @@ export class Server extends ServerCore {
 		return new Server(listener);
 	}
 
-	state = (setter: (request: http.IncomingMessage, response: http.ServerResponse) => any) => {
-		this.controller.state(setter);
-		return this;
-	};
-
 	interceptor = (interceptor: (ctx: Context, error: any) => void) => {
-		this.controller.interceptor(interceptor);
+		this._controller.interceptor(interceptor);
 		return this;
 	}
 
 	use = (nextRequestListener: ContextListener) => {
-		this.controller.register(nextRequestListener);
+		this._controller.register(nextRequestListener);
 		return this;
 	}
 
 	unuse = (nextRequestListener: ContextListener) => {
-		this.controller.unregister(nextRequestListener);
+		this._controller.unregister(nextRequestListener);
 		return this;
 	}
 
-	static install(plugin: (constructor: typeof Server) => void) {
+	modify(modifier: (this: this) => any) {
+		if (typeof modifier === 'function') {
+			modifier.call(this);
+			return this;
+		} else {
+			throw new Error('modifier must be a function');
+		}
+	}
+
+	controller(modifier: (this: Controller) => any) {
+		if (typeof modifier === 'function') {
+			this._controller.modify(modifier);
+			return this;
+		} else {
+			throw new Error('modifier must be a function');
+		}
+	}
+
+	state = (setter: (request: http.IncomingMessage, response: http.ServerResponse) => any) => {
+		this._controller.state(setter);
+		return this;
+	};
+
+	static with(plugin: (target: typeof Server) => any) {
 		if (typeof plugin === 'function') {
 			plugin(Server);
+			return Server;
 		} else {
 			throw new Error('plugin must be a function');
 		}
-		return Server;
 	}
 
-	static controller(plugin: (constructor: typeof Controller) => void) {
+	static controller(plugin: (constructor: typeof Controller) => any) {
 		if (typeof plugin === 'function') {
-			Controller.install(plugin);
+			Controller.with(plugin);
+			return Server;
 		} else {
 			throw new Error('plugin must be a function');
 		}
-		return Server;
 	}
 
-	static context(plugin: (constructor: typeof Context) => void) {
+	static context(plugin: (constructor: typeof Context) => any) {
 		if (typeof plugin === 'function') {
 			Controller.context(plugin);
+			return Server;
 		} else {
 			throw new Error('plugin must be a function');
 		}
-		return Server;
+	}
+
+	protected qqq() {
+		return 123;
 	}
 }
 
