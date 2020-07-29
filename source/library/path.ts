@@ -1,16 +1,19 @@
 import * as path from 'path';
 
-export const areSame = (first: string, second: string) => {
-	return path.normalize(first) === path.normalize(second);
-}
+const upSymbol = /\.\./;
 
-export const isSubDirectory = (parent: string, child: string) => {
-	const relative = path.relative(parent, child);
-	return relative && !relative.startsWith('..') && !path.isAbsolute(relative);
-}
-
-export const isOutsideOf = (containerDirPath: string, dirPath: string) => {
+export const isOutsideOf = (containerDirPath: string, targetDirPath: string) => {
 	containerDirPath = path.normalize(containerDirPath);
-	dirPath = path.normalize(dirPath);
-	return !(areSame(containerDirPath, dirPath) || isSubDirectory(containerDirPath, path.dirname(dirPath)));
+	targetDirPath = path.normalize(targetDirPath);
+	return path.normalize(path.relative(containerDirPath, targetDirPath)).startsWith('..');
+}
+
+export const isTheSame = (containerDirPath: string, targetDirPath: string) => {
+	containerDirPath = path.normalize(containerDirPath);
+	targetDirPath = path.normalize(targetDirPath);
+	return path.normalize(path.relative(containerDirPath, targetDirPath)) === '.';
+}
+
+export const triedToRise = (targetDirPath: string) => {
+	return targetDirPath.search(upSymbol) > -1;
 }

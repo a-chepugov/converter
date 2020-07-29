@@ -1,61 +1,63 @@
 import * as path from "path";
-import {isOutsideOf} from "../library/path";
-import {mkdirp} from "../library/fs";
+import {isOutsideOf, isTheSame} from "../library/path";
+import {exists, mkdirp} from "../library/fs";
 
 import Meta from "../Models/Meta";
+import {Image as ImagePreset} from "../Models/Preset";
 
-import Converter from "./Converter";
+import Converter, {InvalidPresetError} from "./Converter";
+import * as Presets from "../Presets";
 
 export {ConvertError, InvalidPresetError} from "./Converter";
 
 export class AccessError extends Error {
-};
+}
+
+const inputsDir = path.join('.', 'input');
+const outputsDir = path.join('.', 'output');
 
 export class Photos {
 
-	convert = async (input: string, output: string, presets: string[], meta: Meta) => {
-		const cwd = process.cwd();
-		const inputsDir = path.normalize(path.join(cwd, 'input'));
-		const outputsDir = path.normalize(path.join(cwd, 'output'));
-		const currentInputPath = path.normalize(path.join(inputsDir, input));
-		const currentOutputPath = path.normalize(path.join(outputsDir, output));
-		const currentOutputPathBase = path.dirname(currentOutputPath)
+	async convert(presets: ImagePreset[], input: string, output: string, meta: Meta) {
+		const currentInputPath = path.join(inputsDir, input);
+		const currentOutputPath = path.join(outputsDir, output);
 
-		if (isOutsideOf(inputsDir, path.dirname(currentInputPath))) {
-			throw new AccessError('Access restricted to: ' + input);
+		Photos.validatePathOf(inputsDir, path.dirname(currentInputPath));
+		Photos.validatePathOf(outputsDir, currentOutputPath, true);
+
+		if (!exists(currentOutputPath)) {
+			mkdirp(currentOutputPath);
 		}
 
-		if (isOutsideOf(outputsDir, path.dirname(currentOutputPath))) {
-			throw new AccessError('Access restricted to: ' + output);
-		}
-
-		mkdirp(currentOutputPathBase);
-		// @todo передавать format и meta, а также нормализированные параметры путей
-		// @ts-ignore
-		return Converter.convert(input, output, presets);
+		return Converter.convert(presets, currentInputPath, currentOutputPath)
+			.then((response: string[]) => response.map(i => path.relative(outputsDir, i)))
 	}
 
-	convertWithAreaPresets = async (input: string, output: string, area: string[], presets: string[], meta: Meta) => {
-		const cwd = process.cwd();
-		const inputsDir = path.normalize(path.join(cwd, 'input'));
-		const outputsDir = path.normalize(path.join(cwd, 'output'));
-		const currentInputPath = path.normalize(path.join(inputsDir, input));
-		const currentOutputPath = path.normalize(path.join(outputsDir, output));
-		const currentOutputPathBase = path.dirname(currentOutputPath)
+	async convertWithAreaPresets(area: string[], name: string, presetsNames: string[], input: string, output: string, meta: Meta) {
+		const presets = Presets.byArea(area);
+		const presetsList = Array.isArray(presetsNames) && presetsNames.length ?
+			presetsNames.map((presetName) => {
+				const preset = presets.parameters[presetName];
+				if (preset) {
+					return Object.create(preset, {name: {value: name}})
+				} else {
+					throw new InvalidPresetError(`Invalid preset name: ${presetName}`);
+				}
+			}) :
+			Object.values(presets.parameters);
 
-		if (isOutsideOf(inputsDir, path.dirname(currentInputPath))) {
-			throw new AccessError('Access restricted to: ' + input);
-		}
-
-		if (isOutsideOf(outputsDir, path.dirname(currentOutputPath))) {
-			throw new AccessError('Access restricted to: ' + output);
-		}
-
-		mkdirp(currentOutputPathBase);
-		// @todo передавать format и meta, а также нормализированные параметры путей
-		return Converter.convertWithAreaPresets(input, output, area, presets);
+		return this.convert(presetsList, input, output, meta);
 	}
 
+	static validatePathOf(containerPath: string, targetPath: string, strict = false) {
+		if (isOutsideOf(containerPath, targetPath)) {
+			throw new AccessError('Access restricted to: ' + targetPath);
+		}
+
+		if (strict && isTheSame(containerPath, targetPath)) {
+			throw new AccessError('Path must be inside work directory, not the same directory');
+		}
+	}
 }
 
 export default Photos;

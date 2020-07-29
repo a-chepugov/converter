@@ -3,13 +3,14 @@ export interface Area {
 }
 
 export interface Image {
-	format: 'jpg' | 'webp',
-	unsharp?: [number, number, number, number],
+	name?: string,
+	suffix?: string,
+	extension: 'jpg' | 'webp',
 	width: number,
 	height: number,
 	method: 'trim' | 'scale',
 	quality?: number,
-	suffix?: string,
+	unsharp?: [number, number, number, number],
 	interlace?: string,
 	watermarks?: Watermark[]
 }

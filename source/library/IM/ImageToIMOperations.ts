@@ -1,4 +1,4 @@
-import {Operators, Settings, SequenceOperators, Options} from 'imagemagick-cli-wrapper';
+import {Operators, Settings, Options} from 'imagemagick-cli-wrapper';
 
 import Image from '../../Models/Image';
 import ImageWatermark from '../../Models/ImageWatermark';
@@ -10,11 +10,11 @@ import convertParamsToGeometry from './helpers/convertParamsToGeometry';
 
 declare module "../../Models/Image" {
 	interface Image {
-		toIMOperations(filename: string): Option[];
+		toIMOperations(): Option[];
 	}
 }
 
-Image.prototype.toIMOperations = function (filename: string): Option[] {
+Image.prototype.toIMOperations = function (): Option[] {
 	let operations = [];
 
 	operations.push(new Operators.Resize(convertParamsToGeometry(this.method, this.size[0], this.size[1])));
@@ -40,8 +40,6 @@ Image.prototype.toIMOperations = function (filename: string): Option[] {
 				return operations.concat(watermarkOperations);
 			}, operations)
 	}
-
-	operations.push(new SequenceOperators.Write(`${filename}${this.suffix || ''}.${this.format}`));
 
 	return operations;
 };

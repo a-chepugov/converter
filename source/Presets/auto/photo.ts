@@ -1,9 +1,15 @@
 import {Image} from '../../Models/Preset';
 
 const presets: { [key: string]: Image } = {
+	original: {
+		extension: 'jpg',
+		width: 1600,
+		height: 1200,
+		method: 'scale',
+	},
 	fx_jpg: {
+		extension: 'jpg',
 		quality: 70,
-		format: 'jpg',
 		unsharp: [0.6, 0.6, +1, +0.05],
 		width: 800,
 		height: 600,
@@ -23,7 +29,7 @@ const presets: { [key: string]: Image } = {
 	},
 	fx_webp: {
 		quality: 70,
-		format: 'webp',
+		extension: 'webp',
 		unsharp: [0.6, 0.6, +1, +0.05],
 		width: 800,
 		height: 600,
@@ -43,7 +49,7 @@ const presets: { [key: string]: Image } = {
 	},
 	f_jpg: {
 		quality: 70,
-		format: 'jpg',
+		extension: 'jpg',
 		unsharp: [0.6, 0.6, +1, +0.05],
 		width: 640,
 		height: 480,
@@ -63,7 +69,7 @@ const presets: { [key: string]: Image } = {
 	},
 	f_webp: {
 		quality: 70,
-		format: 'webp',
+		extension: 'webp',
 		unsharp: [0.6, 0.6, +1, +0.05],
 		width: 640,
 		height: 480,
@@ -83,7 +89,7 @@ const presets: { [key: string]: Image } = {
 	},
 	bx_jpg: {
 		quality: 70,
-		format: 'jpg',
+		extension: 'jpg',
 		unsharp: [0.6, 0.6, +1, +0.05],
 		width: 380,
 		height: 250,
@@ -102,7 +108,7 @@ const presets: { [key: string]: Image } = {
 	},
 	bx_webp: {
 		quality: 70,
-		format: 'webp',
+		extension: 'webp',
 		unsharp: [0.6, 0.6, +1, +0.05],
 		width: 380,
 		height: 250,
@@ -121,7 +127,7 @@ const presets: { [key: string]: Image } = {
 	},
 	b_jpg: {
 		quality: 70,
-		format: 'jpg',
+		extension: 'jpg',
 		unsharp: [0.6, 0.6, +1, +0.05],
 		width: 300,
 		height: 200,
@@ -140,7 +146,7 @@ const presets: { [key: string]: Image } = {
 	},
 	b_webp: {
 		quality: 70,
-		format: 'webp',
+		extension: 'webp',
 		unsharp: [0.6, 0.6, +1, +0.05],
 		width: 300,
 		height: 200,
@@ -159,7 +165,7 @@ const presets: { [key: string]: Image } = {
 	},
 	bl_jpg: {
 		quality: 70,
-		format: 'jpg',
+		extension: 'jpg',
 		unsharp: [0.6, 0.6, +1, +0.05],
 		width: 295,
 		height: 195,
@@ -178,7 +184,7 @@ const presets: { [key: string]: Image } = {
 	},
 	bl_webp: {
 		quality: 70,
-		format: 'webp',
+		extension: 'webp',
 		unsharp: [0.6, 0.6, +1, +0.05],
 		width: 295,
 		height: 195,
@@ -197,7 +203,7 @@ const presets: { [key: string]: Image } = {
 	},
 	s_jpg: {
 		quality: 80,
-		format: 'jpg',
+		extension: 'jpg',
 		unsharp: [0.4, 0.4, +1, +0.05],
 		width: 100,
 		height: 67,
@@ -206,7 +212,7 @@ const presets: { [key: string]: Image } = {
 	},
 	s_webp: {
 		quality: 80,
-		format: 'webp',
+		extension: 'webp',
 		unsharp: [0.4, 0.4, +1, +0.05],
 		width: 100,
 		height: 67,
@@ -215,7 +221,7 @@ const presets: { [key: string]: Image } = {
 	},
 	lx_jpg: {
 		quality: 80,
-		format: 'jpg',
+		extension: 'jpg',
 		unsharp: [0.4, 0.4, +1, +0.05],
 		width: 85,
 		height: 56,
@@ -224,7 +230,7 @@ const presets: { [key: string]: Image } = {
 	},
 	lx_webp: {
 		quality: 80,
-		format: 'webp',
+		extension: 'webp',
 		unsharp: [0.4, 0.4, +1, +0.05],
 		width: 85,
 		height: 56,
@@ -233,7 +239,7 @@ const presets: { [key: string]: Image } = {
 	},
 	sx_jpg: {
 		quality: 80,
-		format: 'jpg',
+		extension: 'jpg',
 		unsharp: [0.4, 0.4, +1, +0.05],
 		width: 135,
 		height: 90,
@@ -242,7 +248,7 @@ const presets: { [key: string]: Image } = {
 	},
 	sx_webp: {
 		quality: 80,
-		format: 'webp',
+		extension: 'webp',
 		unsharp: [0.4, 0.4, +1, +0.05],
 		width: 135,
 		height: 90,
@@ -251,7 +257,7 @@ const presets: { [key: string]: Image } = {
 	},
 	m_jpg: {
 		quality: 80,
-		format: 'jpg',
+		extension: 'jpg',
 		unsharp: [0.4, 0.4, +1, +0.05],
 		width: 185,
 		height: 120,
@@ -260,7 +266,7 @@ const presets: { [key: string]: Image } = {
 	},
 	m_webp: {
 		quality: 80,
-		format: 'webp',
+		extension: 'webp',
 		unsharp: [0.4, 0.4, +1, +0.05],
 		width: 185,
 		height: 120,
@@ -269,7 +275,7 @@ const presets: { [key: string]: Image } = {
 	},
 	z74x56x70_webp: {
 		quality: 70,
-		format: 'webp',
+		extension: 'webp',
 		unsharp: [0.4, 0.4, +1, +0.05],
 		width: 74,
 		height: 56,
