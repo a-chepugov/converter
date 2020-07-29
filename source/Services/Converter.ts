@@ -60,7 +60,6 @@ export class Converter {
 						reject(Object.assign(new ConvertError(`${JSON.stringify(arguments)}. ${reason}`), {code})) :
 						resolve(outputImages.map((i) => i.fullname))
 				)
-
 			} catch (error) {
 				reject(error);
 			}
