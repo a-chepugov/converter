@@ -25,13 +25,17 @@ export class Context {
 		return Parser.of(type).parse(this.request);
 	}
 
-	static parse = (type?: string) => (ctx: Context): any => Parser.of(type).parse(ctx.request);
+	static parse = (type?: string) => (ctx: Context): any => {
+		return Parser.of(type).parse(ctx.request)
+	};
 
 	send(payload: any, type?: string) {
 		return Sender.of(type).send(this.response, payload);
 	}
 
-	static send = (type?: string) => (ctx: Context, payload: any) => Sender.of(type).send(ctx.response, payload);
+	static send = (type?: string) => (ctx: Context, payload: any) => {
+		return Sender.of(type).send(ctx.response, payload)
+	};
 
 	static with(plugin: (target: typeof Context) => any) {
 		if (typeof plugin === 'function') {
