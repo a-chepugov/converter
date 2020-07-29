@@ -5,6 +5,7 @@ import auxiliary from './auxiliary';
 const parseJSON = (ctx: Context) => ctx.parse('json').catch((error: any) => Promise.reject(Object.assign(error, {reason: error.message, code: 400})));
 
 const router = new Router()
+	.on('post', '/photos/convertByPreset', parseJSON, Photos.convertByPreset)
 	.on('post', '/photos/convert', parseJSON, Photos.convert)
 
 export default router.concat(auxiliary);

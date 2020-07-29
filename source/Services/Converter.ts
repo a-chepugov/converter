@@ -35,10 +35,7 @@ export class Converter {
 			conversion
 	}
 
-	static convert(input: string, output: string, area: string[], presetsNames?: string[]) {
-		const filenameInput = `${INPUT_PATH}${input}`;
-		const filenameOutput = `${OUTPUT_PATH}${output}`;
-		const format = path.extname(filenameInput);
+	static convertWithAreaPresets(input: string, output: string, area: string[], presetsNames?: string[]) {
 		const presets = Presets.byArea(area);
 		const presetsList = Array.isArray(presetsNames) && presetsNames.length ?
 			presetsNames.map((name) => {
@@ -50,6 +47,14 @@ export class Converter {
 				}
 			}) :
 			Object.values(presets.parameters);
+
+		return Converter.convert(input, output, presetsList);
+	}
+
+	static convert(input: string, output: string, presetsList: ImagePreset[]) {
+		const filenameInput = `${INPUT_PATH}${input}`;
+		const filenameOutput = `${OUTPUT_PATH}${output}`;
+		const format = path.extname(filenameInput);
 
 		const filenameOutputMain = `${filenameOutput}${format}`;
 		const convertedFilesList = presetsList.map((preset) => fromPreset.toFilePath(OUTPUT_PATH, output, preset))
