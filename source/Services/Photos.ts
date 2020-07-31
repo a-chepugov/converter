@@ -6,6 +6,7 @@ import Meta from "../Models/Meta";
 import {Image as ImagePreset} from "../Models/Preset";
 
 import Converter, {InvalidPresetError} from "./Converter";
+import MetaData from "./MetaData";
 import * as Presets from "../Presets";
 
 export {ConvertError, InvalidPresetError} from "./Converter";
@@ -30,6 +31,7 @@ export class Photos {
 		}
 
 		return Converter.convert(presets, currentInputPath, currentOutputPath)
+			.then(MetaData.insert(meta))
 			.then((response: string[]) => response.map(i => path.relative(outputsDir, i)))
 	}
 

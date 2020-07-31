@@ -1,6 +1,6 @@
 export type Property = { name: string, value: string }
 
-export default class Meta {
+export class Meta {
 	properties: Property[];
 
 	constructor() {
@@ -27,3 +27,5 @@ export default class Meta {
 		return meta;
 	}
 }
+
+export default Meta;
