@@ -54,7 +54,7 @@ export class Controller {
 	}
 
 	listen: RequestListener = (request, response) => {
-		const ctx = Context.of(request, response, Object.seal(this._state(request, response)));
+		const ctx = new Context(request, response, Object.seal(this._state(request, response)));
 		return this._bundle(ctx, undefined)
 			.then((result: any) => ctx.response.finished ? undefined : ctx.send(result))
 			.catch((error: any) => this._interceptor(ctx, error))
