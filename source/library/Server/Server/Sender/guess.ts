@@ -31,7 +31,7 @@ export class guess implements Send<ServerResponse, any> {
 		switch (true) {
 			case typeof payload === 'object' && Object.getPrototypeOf(payload) === Object.prototype:
 				return 'json';
-			case typeof payload?.toString === 'function':
+			case payload && typeof payload.toString === 'function':
 				return 'stringable';
 		}
 	}

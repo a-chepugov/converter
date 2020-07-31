@@ -49,4 +49,4 @@ export class Context {
 
 export default Context;
 
-export type ContextListener = (ctx: any, result: any) => any;
+export type ContextListener = (ctx: any, input?: any) => any;

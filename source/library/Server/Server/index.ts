@@ -54,8 +54,7 @@ export class Server extends ServerCore {
 	}
 
 	static create(listeners?: Iterable<ContextListener>) {
-		const listener = new Controller(listeners);
-		return new Server(listener);
+		return new Server(new Controller(listeners));
 	}
 
 	interceptor = (interceptor: (ctx: Context, error: any) => void) => {
@@ -73,7 +72,7 @@ export class Server extends ServerCore {
 		return this;
 	}
 
-	modify(modifier: (this: this) => any) {
+	modify = (modifier: (this: this) => any) => {
 		if (typeof modifier === 'function') {
 			modifier.call(this);
 			return this;
@@ -82,7 +81,7 @@ export class Server extends ServerCore {
 		}
 	}
 
-	controller(modifier: (this: Controller) => any) {
+	controller = (modifier: (this: Controller) => any) => {
 		if (typeof modifier === 'function') {
 			this._controller.modify(modifier);
 			return this;
