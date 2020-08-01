@@ -10,15 +10,11 @@ export class Context {
 	readonly response: ServerResponse;
 	readonly state: any;
 
-	constructor({request, response, state}: { request: IncomingMessage, response: ServerResponse, state?: any }) {
+	constructor(request: IncomingMessage, response: ServerResponse, state?: any) {
 		this.request = request;
 		this.response = response;
 		this.state = state;
 		Object.freeze(this);
-	}
-
-	static of(request: IncomingMessage, response: ServerResponse, state?: any) {
-		return new Context({request, response, state});
 	}
 
 	parse(type?: string) {
@@ -53,4 +49,4 @@ export class Context {
 
 export default Context;
 
-export type ContextListener = (ctx: any, result: any) => any;
+export type ContextListener = (ctx: any, input?: any) => any;

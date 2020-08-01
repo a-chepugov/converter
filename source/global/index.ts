@@ -2,8 +2,8 @@ import "./logger";
 
 declare global {
 	interface Error {
-		code: number;
-		reason: string;
+		code?: number | string;
+		reason?: string;
 	}
 }
 

@@ -5,8 +5,11 @@
 	"main": "index.js",
 	"module": "index.ts",
 	"scripts": {
-		"start:ts": "ts-node source/index.ts",
-		"server:watch": "nodemon -e ts -w ./source -x npm run start:ts",
+		"build": "tsc",
+		"server": "node build/index.js",
+		"server:watch": "node build/index.js",
+		"server:ts": "ts-node source/index.ts",
+		"server:ts:watch": "nodemon -e ts -w ./source -x npm run server:ts",
 		"test": "mocha -r ts-node/register source/**/*test.ts"
 	},
 	"dependencies": {

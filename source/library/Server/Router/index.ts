@@ -8,7 +8,7 @@ import {Controller, Context, ContextListener} from "../Server/Controller";
 import "./Context";
 
 type RouteMatcher = string | RegExp;
-type RouteHandler = (ctx: Context, result: any) => any;
+type RouteHandler = (ctx: Context, input?: any) => any;
 
 export class Router {
 	protected _handlers: Map<Method, Map<RouteMatcher, { pattern: RegExp, handler: RouteHandler }>>;
@@ -27,7 +27,7 @@ export class Router {
 			}, new Map);
 	}
 
-	private setRouterHandler(method: Method, matcher: RouteMatcher, handler: RouteHandler) {
+	private setRouterHandler = (method: Method, matcher: RouteMatcher, handler: RouteHandler) => {
 		method = String.prototype.toLocaleUpperCase.call(method);
 		let methodHandlers = this._handlers.get(method)
 
@@ -45,43 +45,35 @@ export class Router {
 		return this;
 	}
 
-	private getRouterHandler(method: Method, pathname: string): [RouteHandler, { [key: string]: string } | undefined] | undefined {
-		method = String.prototype.toLocaleUpperCase.call(method);
+	private getRouterHandler = (method: Method, pathname: string): [RouteHandler, { [key: string]: string } | undefined] | undefined => {
 		const methodHandlers = this._handlers.get(method);
 		if (methodHandlers) {
 			const entriesIterator = methodHandlers.values();
-			for (let item of entriesIterator) {
-				const {pattern, handler} = item;
+			for (const {pattern, handler} of entriesIterator) {
 				const result = pattern.exec(pathname)
 				if (result) {
-					return [handler, result.groups];
+					return [handler, result.groups || {}];
 				}
 			}
 		}
 	}
 
 	on = (method: Method, matcher: RouteMatcher, ...listeners: RouteHandler[]) => {
-		const listener = listeners.length === 1 ? listeners[0] : Controller.build(listeners);
+		const listener = listeners.length === 1 ? listeners[0] : Controller.builder(listeners);
 		this.setRouterHandler(method, matcher, listener);
 		return this;
 	}
 
-	listen: ContextListener = (ctx: Context, result: any) => {
+	listen: ContextListener = (ctx: Context, input: any) => {
 		const anUrl = url.parse(ctx.request.url);
 		const [handler, parameters] = this.getRouterHandler(ctx.request.method, anUrl.pathname) || [];
 		if (handler) {
-			const routeContext = ctx.overlay({parameters: {value: parameters}});
-			return new Promise((resolve, reject) => {
-				try {
-					resolve(handler(routeContext, result));
-				} catch (error) {
-					reject(error);
-				}
-			});
+			const ctxParameterized = ctx.overlay({parameters: {value: parameters}});
+			return handler(ctxParameterized, input);
 		} else {
 			const error = new Error(STATUS_CODES[404]);
 			error.code = 404;
-			return Promise.reject(error);
+			throw error;
 		}
 	}
 
