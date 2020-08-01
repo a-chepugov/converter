@@ -37,7 +37,7 @@ export class Controller {
 						return handler(ctx, promise).then((input: any) => listener(ctx, input));
 					}
 				},
-				(ctx: Context, promise: any) => promise
+				(ctx: Context, initial: any) => Promise.resolve(initial)
 			)
 	}
 
@@ -45,7 +45,7 @@ export class Controller {
 		const folded = Controller.builder(this._listeners.values());
 
 		this._bundle = (ctx: Context, initial: any) =>
-			folded(ctx, Promise.resolve(initial))
+			folded(ctx, initial)
 				.then(
 					(result: any) => ctx.response.finished ? undefined : ctx.send(result),
 					(error: any) => this._interceptor(ctx, error)
