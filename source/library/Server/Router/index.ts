@@ -5,7 +5,7 @@ import Method from "../Method";
 
 import {Controller, Context, ContextListener} from "../Server/Controller";
 
-import "./Context";
+import {Parameters} from "./Context";
 
 type RouteMatcher = string | RegExp;
 type RouteHandler = (ctx: Context, input?: any) => any;
@@ -45,14 +45,14 @@ export class Router {
 		return this;
 	}
 
-	private getRouterHandler = (method: Method, pathname: string): [RouteHandler, { [key: string]: string } | undefined] | undefined => {
+	private getRouterHandler = (method: Method, pathname: string): [RouteHandler, Parameters] | undefined => {
 		const methodHandlers = this._handlers.get(method);
 		if (methodHandlers) {
 			const entriesIterator = methodHandlers.values();
 			for (const {pattern, handler} of entriesIterator) {
-				const result = pattern.exec(pathname)
-				if (result) {
-					return [handler, result.groups || {}];
+				const matched = pattern.exec(pathname)
+				if (matched) {
+					return [handler, matched.groups || {}] as [RouteHandler, Parameters];
 				}
 			}
 		}
