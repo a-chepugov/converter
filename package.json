@@ -6,8 +6,8 @@
 	"module": "index.ts",
 	"scripts": {
 		"build": "tsc",
-		"server": "node build/index.js",
-		"server:watch": "node build/index.js",
+		"server:js": "node build/index.js",
+		"server:watch": "nodemon -e js -w ./build -x npm run server:js",
 		"server:ts": "ts-node source/index.ts",
 		"server:ts:watch": "nodemon -e ts -w ./source -x npm run server:ts",
 		"test": "mocha -r ts-node/register source/**/*test.ts"
