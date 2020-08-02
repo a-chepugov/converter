@@ -9,11 +9,12 @@ export class Sender {
 		return Sender;
 	}
 
-	static of(type?: string) {
-		if (Sender.registry.has(type)) {
-			return Sender.registry.get(type);
+	static of(type: string) {
+		const registry = Sender.registry;
+		if (type && registry.has(type)) {
+			return registry.get(type);
 		} else {
-			return Sender.registry.get('guess');
+			return registry.get('json');
 		}
 	}
 }
@@ -24,12 +25,10 @@ import base from "./base";
 import json from "./json";
 import stream from "./stream";
 import stringable from "./stringable";
-import guess from "./guess";
 
 Sender
 	.register('base', base)
 	.register('json', json)
 	.register('stream', stream)
 	.register('stringable', stringable)
-	.register('guess', guess)
 ;

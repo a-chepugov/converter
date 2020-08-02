@@ -9,11 +9,12 @@ export class Parser {
 		return Parser;
 	}
 
-	static of(type?: string) {
-		if (Parser.registry.has(type)) {
-			return Parser.registry.get(type);
+	static of(type: string) {
+		const registry = Parser.registry;
+		if (type && registry.has(type)) {
+			return registry.get(type);
 		} else {
-			return Parser.registry.get('base');
+			return registry.get('base');
 		}
 	}
 
