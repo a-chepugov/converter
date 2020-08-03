@@ -10,11 +10,10 @@ export class Context {
 	readonly response: ServerResponse;
 	readonly state: any;
 
-	constructor(request: IncomingMessage, response: ServerResponse, state?: any) {
+	constructor(request: IncomingMessage, response: ServerResponse, state: any) {
 		this.request = request;
 		this.response = response;
 		this.state = state;
-		Object.freeze(this);
 	}
 
 	parse(type?: string) {
@@ -46,9 +45,6 @@ export class Context {
 		}
 	}
 
-	overlay(properties: { [key: string]: any }) {
-		return Object.create(this, properties);
-	}
 }
 
 export default Context;

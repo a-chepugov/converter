@@ -45,7 +45,7 @@ export class Controller {
 		const folded = Controller.builder(this._listeners.values());
 
 		this._bundle = (ctx: Context, initial: any) =>
-			folded(ctx, initial)
+			folded(Object.freeze(ctx), initial)
 				.then(
 					(result: any) => ctx.response.finished ? undefined : ctx.send(result),
 					(error: any) => this._interceptor(ctx, error)
@@ -56,7 +56,7 @@ export class Controller {
 
 	listen: RequestListener = (request, response) => {
 		return this._bundle(
-			new Context(request, response, Object.seal(this._state(request, response))),
+			new Context(request, response, this._state(request, response)),
 			undefined
 		)
 	}
