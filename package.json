@@ -13,6 +13,7 @@
 		"test": "mocha -r ts-node/register source/**/*test.ts"
 	},
 	"dependencies": {
+		"heapdump": "^0.3.15",
 		"imagemagick-cli-wrapper": "git+https://github.com/a-chepugov/imagemagick-cli-wrapper.git "
 	},
 	"devDependencies": {
