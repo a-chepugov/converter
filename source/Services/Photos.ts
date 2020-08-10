@@ -5,11 +5,12 @@ import {exists, mkdirp} from "../library/fs";
 import Meta from "../Models/Meta";
 import {Image as ImagePreset} from "../Models/Preset";
 
-import Converter, {InvalidPresetError} from "./Converter";
-import MetaData from "./MetaData";
 import * as Presets from "../Presets";
 
-export {ConvertError, InvalidPresetError} from "./Converter";
+import Cutter, {ConvertError, InvalidPresetError} from "../Infrastructure/Converters/Cutter";
+export {ConvertError, InvalidPresetError} from "../Infrastructure/Converters/Cutter";
+
+import MetaData from "../Infrastructure/Converters/MetaData";
 
 export class AccessError extends Error {
 }
@@ -30,7 +31,7 @@ export class Photos {
 			mkdirp(currentOutputPath);
 		}
 
-		return Converter.convert(presets, currentInputPath, currentOutputPath)
+		return Cutter.convert(presets, currentInputPath, currentOutputPath)
 			.then(MetaData.insert(meta))
 			.then((response: string[]) => response.map(i => path.relative(outputsDir, i)))
 	}
@@ -47,6 +48,13 @@ export class Photos {
 				}
 			}) :
 			Object.values(presets.parameters);
+
+		try {
+			const currentOutputPath = path.join(outputsDir, output);
+			Photos.validatePathOf(path.join('output', ...area), currentOutputPath, true);
+		} catch (error) {
+				throw new AccessError('Output path must be inside ' + path.join(...area));
+		}
 
 		return this.convert(presetsList, input, output, meta);
 	}

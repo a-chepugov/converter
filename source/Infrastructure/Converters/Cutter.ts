@@ -2,11 +2,11 @@ const {spawn} = require('child_process');
 const path = require('path');
 import {Input, Output, Operators, Convert, SequenceOperators} from 'imagemagick-cli-wrapper';
 
-import Image from '../Models/Image';
-import {Image as ImagePreset} from '../Models/Preset';
-import * as fromPreset from '../Presets/fromPreset';
+import Image from '../../Models/Image';
+import {Image as ImagePreset} from '../../Models/Preset';
+import * as fromPreset from '../../Presets/fromPreset';
 
-import '../library/IM/ImageToIMOperations';
+import '../../library/IM/ImageToIMOperations';
 
 export class InvalidPresetError extends Error {
 }
@@ -16,7 +16,7 @@ export class ConvertError extends Error {
 
 const STATIC_PATH = 'static';
 
-export class Converter {
+export class Cutter {
 
 	static buildConvertFromImages(inputImage: Image, outputImages: Image[]) {
 		if ((Array.isArray(outputImages) && outputImages.length)) {
@@ -46,7 +46,7 @@ export class Converter {
 
 		const outputImages = presetsList.map((preset) => fromPreset.toImage(output, preset, STATIC_PATH))
 
-		const convert = Converter.buildConvertFromImages(inputImage, outputImages);
+		const convert = Cutter.buildConvertFromImages(inputImage, outputImages);
 
 		return new Promise((resolve, reject) => {
 			try {
@@ -68,4 +68,4 @@ export class Converter {
 
 }
 
-export default Converter
+export default Cutter

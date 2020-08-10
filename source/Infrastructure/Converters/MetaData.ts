@@ -1,6 +1,6 @@
 const {spawn} = require('child_process');
 
-import Meta from '../Models/Meta';
+import Meta from '../../Models/Meta';
 
 export class MetaDataError extends Error {
 }
