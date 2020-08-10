@@ -1,36 +1,31 @@
 const {spawn} = require('child_process');
 
 import Meta from '../../Models/Meta';
+import {Exiftool, Input, Tags} from '../../library/exiftool-wrapper';
+import '../../library/Meta2Exiftool';
 
 export class MetaDataError extends Error {
 }
 
 export class MetaData {
-	static buildEXIFCommandFromMeta(meta: Meta, files: string[]): {build:() => string} {
-		return {
-			build: () => ''
-		}
-	}
+	static insert = (metaRaw: { [name: string]: string }) => (files: string[]) => {
+		const options = Meta.from(metaRaw).toExiftoolOptions();
 
-
-	static insert = (meta: Meta) => (files: string[]) => {
-		console.log('DEBUG:MetaData.ts():9 =>', meta);
-		const exifcommand = MetaData.buildEXIFCommandFromMeta(meta, files);
-
-		console.log('DEBUG:MetaData.ts(m):20 =>', exifcommand);
+		const exifCommand = Exiftool
+			.of(files.map((file) => Input.Globbing.of(file)))
+			.with(new Tags.OverwriteOriginal())
+			.append(options.options)
 
 		return new Promise((resolve, reject) => {
-			resolve(files);
-			return;
 			try {
-				const [command, ...parameters] = exifcommand.build();
+				const [command, ...parameters] = exifCommand.build();
 				const child = spawn(command, parameters);
 
 				let reason = '';
 				child.stderr.on('data', (data: Buffer) => reason += data.toString('utf8'));
 				child.on('close', (code: number) =>
 					code ?
-						reject(Object.assign(new MetaDataError(`${JSON.stringify({files, meta})}. ${reason}`), {code})) :
+						reject(Object.assign(new MetaDataError(`${JSON.stringify({files, meta: metaRaw})}. ${reason}`), {code})) :
 						resolve(files)
 				)
 			} catch (error) {
@@ -43,4 +38,4 @@ export class MetaData {
 
 }
 
-export default MetaData
+export default MetaData;

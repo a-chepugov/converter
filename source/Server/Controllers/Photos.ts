@@ -14,7 +14,7 @@ export function convertByPreset(ctx: Context, body: { [key: string]: any }) {
 	const profiler = profilerConvert.start(':convertByPreset');
 	const {input, output, name, area, presets, meta} = body;
 	return photos
-		.convertWithAreaPresets(area, name, presets, input, output, meta as Meta)
+		.convertWithAreaPresets(area, name, presets, input, output, meta)
 		.then((response: any) => {
 			ctx.response.setHeader('X-COMPLETED-IN', profiler.end().result);
 			return response;
@@ -39,7 +39,7 @@ export function convertByPreset(ctx: Context, body: { [key: string]: any }) {
 export function convert(ctx: Context, body: { [key: string]: any }) {
 	const profiler = profilerConvert.start('convert');
 	const {input, output, presets, meta} = body;
-	return photos.convert(presets, input, output, meta as Meta)
+	return photos.convert(presets, input, output, meta)
 		.then((response: any) => {
 			ctx.response.setHeader('X-COMPLETED-IN', profiler.end().result);
 			return response;

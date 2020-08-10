@@ -1,29 +1,35 @@
-export type Property = { name: string, value: string }
+export type Property = [string, string]
 
 export class Meta {
-	properties: Property[];
+	properties: Map<string, string>;
 
-	constructor() {
-		this.properties = [];
+	constructor(properties?: Iterable<Property>) {
+		this.properties = new Map(properties);
 	}
 
 	add(property: Property) {
-		this.properties.push(property);
+		this.properties.set(property[0], property[1]);
 		return this;
 	}
 
 	with(name: string, value: string) {
-		this.properties.push({name, value});
+		this.properties.set(name, value);
 		return this;
 	}
 
-	static of(properties?: Array<[string, string]>) {
+	has(name: string) {
+		return this.properties.has(name);
+	}
+
+	get(name: string) {
+		return this.properties.get(name);
+	}
+
+	static from(source: { [name: string]: string }) {
 		const meta = new Meta();
-
-		if (Array.isArray(properties)) {
-			properties.forEach(([name, value] = ['', '']) => meta.with(name, value));
+		for (let key in source) {
+			meta.with(key, source[key]);
 		}
-
 		return meta;
 	}
 }

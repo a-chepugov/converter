@@ -20,7 +20,7 @@ const outputsDir = path.join('.', 'output');
 
 export class Photos {
 
-	async convert(presets: ImagePreset[], input: string, output: string, meta: Meta) {
+	async convert(presets: ImagePreset[], input: string, output: string, meta: any) {
 		const currentInputPath = path.join(inputsDir, input);
 		const currentOutputPath = path.join(outputsDir, output);
 
