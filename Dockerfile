@@ -1,4 +1,6 @@
-FROM node:14
+FROM node:12
+
+WORKDIR /srv
 
 ARG NODE_ENV
 
@@ -8,21 +10,22 @@ ENV NODE_SERVER_PORT 80
 
 EXPOSE 80
 
-ENTRYPOINT [ "npm", "run", "server:ts:watch" ]
+HEALTHCHECK --interval=1m --timeout=5s --start-period=5s --retries=3 \
+CMD curl -f -s -o /dev/null http://localhost/ping || exit 1
 
-HEALTHCHECK --interval=1m --timeout=3s --retries=3 \
-	CMD curl -f -s -o /dev/null http://localhost:80/ping || exit 1
+ENTRYPOINT [ "npm", "run", "start" ]
 
-WORKDIR /srv
+RUN \
+apt-get update; \
+apt-get install -y imagemagick; \
+apt-get install -y exiftool; \
+apt-get install -y webp;
 
 COPY package*.json ./
 
 RUN echo $NODE_ENV; \
-if [ "$NODE_ENV" = "production" ]; \
-then \
-	npm install; \
-else \
-	npm install; \
-fi;
+npm install --production --unsafe-perm;
 
 COPY . ./
+
+RUN npm run build;

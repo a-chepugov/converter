@@ -1,7 +1,7 @@
 {
 	"name": "converter",
 	"version": "1.0.0",
-	"description": "",
+	"description": "Based on ImageMagick and ExifTool applications image converter",
 	"main": "index.js",
 	"module": "index.ts",
 	"scripts": {
@@ -14,23 +14,33 @@
 		"test": "mocha -r ts-node/register source/**/*test.ts"
 	},
 	"dependencies": {
-		"heapdump": "^0.3.15",
 		"imagemagick-cli-wrapper": "git+https://github.com/a-chepugov/imagemagick-cli-wrapper.git "
 	},
 	"devDependencies": {
-		"@types/chai": "^4.1.7",
+		"@types/chai": "^4.2.12",
 		"@types/mocha": "^5.2.7",
 		"chai": "^4.2.0",
-		"mocha": "^6.2.0",
+		"mocha": "^6.2.3",
 		"nodemon": "^2.0.4",
-		"ts-node": "^8.3.0",
-		"typedoc": "^0.17.7"
+		"ts-node": "^8.10.2",
+		"typedoc": "^0.17.8"
 	},
 	"optionalDependencies": {
-		"@types/node": "^12.12.6",
-		"typescript": "^3.5.3"
+		"@types/node": "^12.12.54",
+		"typescript": "^3.9.7"
 	},
-	"keywords": [],
+	"config": {
+		"unsafe-perm": true
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://gitlab.decluster.ria.com/a.chepugov/converter.git"
+	},
+	"keywords": [
+		"converter",
+		"imagemagick",
+		"exiftool"
+	],
 	"author": "",
 	"license": "ISC"
 }
