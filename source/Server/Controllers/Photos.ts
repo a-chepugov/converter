@@ -1,8 +1,6 @@
 import {Context} from "../../library/Server";
 import {Profiler} from "../../library/Profiler";
 
-import Meta from "../../Models/Meta";
-
 import Photos, {AccessError, ConvertError, InvalidPresetError} from "../../Services/Photos";
 
 const ProfilerDate = Profiler.factory();
