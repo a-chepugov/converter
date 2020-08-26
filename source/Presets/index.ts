@@ -1,8 +1,10 @@
 import {Area as AreaPresets} from '../Models/Preset';
 
+import auto_photo from './auto/photo';
+
 export const Presets = {
 	auto: {
-		photo: {parameters: require('./auto/photo').default} as AreaPresets,
+		photo: {parameters: auto_photo} as AreaPresets,
 	},
 };
 
