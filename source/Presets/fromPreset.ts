@@ -11,10 +11,10 @@ export function toWatermark(preset: WatermarkPreset, staticpath: string): ImageW
 		.set('valign', preset.valign)
 }
 
-export function toImage(output: string, preset: ImagePreset, staticpath: string): Image {
+export function toImage(output: string, name: string, preset: ImagePreset, staticpath: string): Image {
 	const image = new Image(
 		output,
-		(preset.name || '') + (preset.suffix || '') + (preset.extension ? '.' + preset.extension : '')
+		(name || '') + (preset.name || '') + (preset.suffix || '') + (preset.extension ? '.' + preset.extension : '')
 	)
 
 	if (preset.width && preset.height) {

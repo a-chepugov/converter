@@ -41,10 +41,10 @@ export class Cutter {
 		}
 	}
 
-	static convert(presetsList: ImagePreset[], input: string, output: string) {
+	static convert(presetsList: ImagePreset[], input: string, output: string, name: string) {
 		const inputImage = new Image(path.dirname(input), path.basename(input));
 
-		const outputImages = presetsList.map((preset) => fromPreset.toImage(output, preset, STATIC_PATH))
+		const outputImages = presetsList.map((preset) => fromPreset.toImage(output, name, preset, STATIC_PATH))
 
 		const convert = Cutter.buildConvertFromImages(inputImage, outputImages);
 

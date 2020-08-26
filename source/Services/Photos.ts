@@ -20,7 +20,7 @@ const outputsDir = path.join('.', 'output');
 
 export class Photos {
 
-	async convert(presets: ImagePreset[], input: string, output: string, meta: any) {
+	async convert(presets: ImagePreset[], input: string, output: string, name: string, meta: any) {
 		const currentInputPath = path.join(inputsDir, input);
 		const currentOutputPath = path.join(outputsDir, output);
 
@@ -31,12 +31,12 @@ export class Photos {
 			mkdirp(currentOutputPath);
 		}
 
-		return Cutter.convert(presets, currentInputPath, currentOutputPath)
+		return Cutter.convert(presets, currentInputPath, currentOutputPath, name)
 			.then(MetaData.insert(meta))
 			.then((response: string[]) => response.map(i => path.relative(outputsDir, i)))
 	}
 
-	async convertWithAreaPresets(area: string[], name: string, presetsNames: string[], input: string, output: string, meta: Meta) {
+	async convertWithAreaPresets(area: string[], presetsNames: string[], input: string, output: string, name: string, meta: Meta) {
 		const presets = Presets.byArea(area);
 		const presetsList = Array.isArray(presetsNames) && presetsNames.length ?
 			presetsNames.map((presetName) => {
@@ -56,7 +56,7 @@ export class Photos {
 				throw new AccessError('Output path must be inside ' + path.join(...area));
 		}
 
-		return this.convert(presetsList, input, output, meta);
+		return this.convert(presetsList, input, output, name, meta);
 	}
 
 	static validatePathOf(containerPath: string, targetPath: string, strict = false) {
