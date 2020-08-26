@@ -4,8 +4,8 @@ import {State} from './library/State';
 import interceptor from './library/interceptor';
 import router from './Router';
 
-const HOST = 'localhost';
-const PORT = 3000;
+const HOST = process.env.NODE_SERVER_HOST || '0.0.0.0';
+const PORT = Number(process.env.NODE_SERVER_PORT) || 8080;
 
 Server
 	.create()
