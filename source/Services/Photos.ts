@@ -42,7 +42,7 @@ export class Photos {
 			presetsNames.map((presetName) => {
 				const preset = presets.parameters[presetName];
 				if (preset) {
-					return Object.create(preset, {name: {value: name}})
+					return preset;
 				} else {
 					throw new InvalidPresetError(`Invalid preset name: ${presetName}`);
 				}

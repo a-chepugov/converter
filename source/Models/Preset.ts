@@ -3,7 +3,6 @@ export interface Area {
 }
 
 export interface Image {
-	name?: string,
 	suffix?: string,
 	extension: 'jpg' | 'webp',
 	width: number,

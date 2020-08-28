@@ -14,7 +14,7 @@ export function toWatermark(preset: WatermarkPreset, staticpath: string): ImageW
 export function toImage(output: string, name: string, preset: ImagePreset, staticpath: string): Image {
 	const image = new Image(
 		output,
-		(name || '') + (preset.name || '') + (preset.suffix || '') + (preset.extension ? '.' + preset.extension : '')
+		(name || '') + (preset.suffix || '') + (preset.extension ? '.' + preset.extension : '')
 	)
 
 	if (preset.width && preset.height) {
