@@ -7,12 +7,18 @@ import '../../library/Meta2Exiftool';
 export class MetaDataError extends Error {
 }
 
+const allowedExtensions = ['.jpg', '.png'];
+
 export class MetaData {
 	static insert = (metaRaw: { [name: string]: string }) => (files: string[]) => {
 		const options = Meta.from(metaRaw).toExiftoolOptions();
 
 		const exifCommand = Exiftool
-			.of(files.map((file) => Input.Globbing.of(file)))
+			.of(
+				files
+					.filter((file) => allowedExtensions.includes(extname(file)))
+					.map((file) => Input.Globbing.of(file))
+			)
 			.with(new Tags.OverwriteOriginal())
 			.append(options.options)
 
