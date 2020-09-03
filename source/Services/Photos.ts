@@ -1,6 +1,6 @@
 import * as path from "path";
 import {isOutsideOf, isTheSame} from "../library/path";
-import {exists, mkdirp} from "../library/fs";
+import {mkdirp, clean} from "../library/fs";
 
 import Meta from "../Models/Meta";
 import {Image as ImagePreset} from "../Models/Preset";
@@ -27,9 +27,8 @@ export class Photos {
 		Photos.validatePathOf(inputsDir, path.dirname(currentInputPath));
 		Photos.validatePathOf(outputsDir, currentOutputPath, true);
 
-		if (!exists(currentOutputPath)) {
-			mkdirp(currentOutputPath);
-		}
+		await clean(currentOutputPath);
+		await mkdirp(currentOutputPath);
 
 		return Cutter.convert(presets, currentInputPath, currentOutputPath, name)
 			.then(MetaData.insert(meta))
