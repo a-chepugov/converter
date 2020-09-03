@@ -1,4 +1,5 @@
-const {spawn} = require('child_process');
+const {extname} = require('path');
+const {spawn} = require('../../library/Process');
 
 import Meta from '../../Models/Meta';
 import {Exiftool, Input, Tags} from '../../library/exiftool-wrapper';
@@ -22,24 +23,8 @@ export class MetaData {
 			.with(new Tags.OverwriteOriginal())
 			.append(options.options)
 
-		return new Promise((resolve, reject) => {
-			try {
-				const [command, ...parameters] = exifCommand.build();
-				const child = spawn(command, parameters);
-
-				let reason = '';
-				child.stderr.on('data', (data: Buffer) => reason += data.toString('utf8'));
-				child.on('close', (code: number) =>
-					code ?
-						reject(Object.assign(new MetaDataError(`${JSON.stringify({files, meta: metaRaw})}. ${reason}`), {code})) :
-						resolve(files)
-				)
-			} catch (error) {
-				reject(error);
-			}
-
-			resolve(files);
-		});
+		return spawn.apply(null, exifCommand.build())
+			.then(() => files, () => files)
 	}
 
 }

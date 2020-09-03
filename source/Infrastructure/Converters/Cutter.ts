@@ -1,4 +1,4 @@
-const {spawn} = require('child_process');
+const {spawn} = require('../../library/Process');
 const path = require('path');
 import {Input, Output, Operators, Convert, SequenceOperators} from 'imagemagick-cli-wrapper';
 
@@ -48,22 +48,9 @@ export class Cutter {
 
 		const convert = Cutter.buildConvertFromImages(inputImage, outputImages);
 
-		return new Promise((resolve, reject) => {
-			try {
-				const [command, ...parameters] = convert.build();
-				const child = spawn(command, parameters);
-
-				let reason = '';
-				child.stderr.on('data', (data: Buffer) => reason += data.toString('utf8'));
-				child.on('close', (code: number) =>
-					code ?
-						reject(Object.assign(new ConvertError(`${JSON.stringify(arguments)}. ${reason}`), {code})) :
-						resolve(outputImages.map((i) => i.fullname))
-				)
-			} catch (error) {
-				reject(error);
-			}
-		});
+		return spawn.apply(null, convert.build())
+			.then(() => outputImages.map((i) => i.fullname))
+			.catch((error: any) => Object.assign(new ConvertError(`${JSON.stringify(arguments)}. ${error.message}`), {code: error.code}))
 	}
 
 }
