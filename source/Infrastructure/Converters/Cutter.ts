@@ -50,7 +50,11 @@ export class Cutter {
 
 		return spawn.apply(null, convert.build())
 			.then(() => outputImages.map((i) => i.fullname))
-			.catch((error: any) => Object.assign(new ConvertError(`${JSON.stringify(arguments)}. ${error.message}`), {code: error.code}))
+			.catch((error: any) => {
+				const e = new ConvertError(`${JSON.stringify(arguments)}. ${error.message}`);
+				e.code = error.code;
+				throw e;
+			})
 	}
 
 }
