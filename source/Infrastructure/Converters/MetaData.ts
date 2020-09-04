@@ -1,5 +1,5 @@
 const {extname} = require('path');
-const {spawn} = require('../../library/Process');
+import {spawn} from '../../library/Process'
 
 import Meta from '../../Models/Meta';
 import {Exiftool, Input, Tags} from '../../library/exiftool-wrapper';

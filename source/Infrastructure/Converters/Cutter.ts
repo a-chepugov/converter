@@ -1,4 +1,4 @@
-const {spawn} = require('../../library/Process');
+import {spawn} from '../../library/Process';
 const path = require('path');
 import {Input, Output, Operators, Convert, SequenceOperators} from 'imagemagick-cli-wrapper';
 
