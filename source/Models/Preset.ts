@@ -4,7 +4,7 @@ export interface Area {
 
 export interface Image {
 	suffix?: string,
-	extension: 'jpg' | 'webp',
+	extension: string,
 	width: number,
 	height: number,
 	method: 'trim' | 'scale',

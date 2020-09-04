@@ -2,7 +2,7 @@ import {Image} from '../../Models/Preset';
 
 const presets: { [key: string]: Image } = {
 	original: {
-		extension: 'jpg',
+		extension: 'jpeg',
 		width: 1600,
 		height: 1200,
 		method: 'scale',
