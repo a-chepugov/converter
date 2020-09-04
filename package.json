@@ -1,6 +1,6 @@
 {
 	"name": "converter",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Based on ImageMagick and ExifTool applications image converter",
 	"main": "index.js",
 	"module": "index.ts",
