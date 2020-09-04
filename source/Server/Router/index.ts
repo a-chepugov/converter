@@ -8,7 +8,8 @@ const parseJSON = (ctx: Context) => ctx.parse('json').catch((error: any) => Prom
 })));
 
 const router = new Router()
-	.on('post', '/photos/convertByPresets', parseJSON, Photos.convertByPresets, Context.send('json'))
 	.on('post', '/photos/convert', parseJSON, Photos.convert, Context.send('json'))
+	.on('post', '/photos/convertForArea', parseJSON, Photos.convertWithAreaPresets, Context.send('json'))
+	.on('post', '/photos/convertMixed', parseJSON, Photos.convertMixed, Context.send('json'))
 
 export default router.concat(auxiliary);

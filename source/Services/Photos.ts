@@ -8,11 +8,15 @@ import {Image as ImagePreset} from "../Models/Preset";
 import * as Presets from "../Presets";
 
 import Cutter, {ConvertError, InvalidPresetError} from "../Infrastructure/Converters/Cutter";
+
 export {ConvertError, InvalidPresetError} from "../Infrastructure/Converters/Cutter";
 
 import MetaData from "../Infrastructure/Converters/MetaData";
 
 export class AccessError extends Error {
+}
+
+export class InputError extends Error {
 }
 
 const inputsDir = path.join('.', 'input');
@@ -52,10 +56,40 @@ export class Photos {
 			const currentOutputPath = path.join(outputsDir, output);
 			Photos.validatePathOf(path.join('output', ...area), currentOutputPath, true);
 		} catch (error) {
-				throw new AccessError('Output path must be inside ' + path.join(...area));
+			throw new AccessError('Output path must be inside ' + path.join(...area));
 		}
 
 		return this.convert(presetsList, input, output, name, meta);
+	}
+
+	async convertMixed(area: string[], presets: string[] | ImagePreset, input: string, output: string, name: string, meta: Meta) {
+		const areaPresets = Presets.byArea(area);
+		if (Array.isArray(presets) && presets.length) {
+			const presetsList =
+				presets.map((presetConfig) => {
+					if (typeof presetConfig === 'string') {
+						const preset = areaPresets.parameters[presetConfig];
+						if (preset) {
+							return preset;
+						} else {
+							throw new InvalidPresetError(`Invalid preset name: ${presetConfig}`);
+						}
+					} else {
+						return presetConfig;
+					}
+				})
+
+			try {
+				const currentOutputPath = path.join(outputsDir, output);
+				Photos.validatePathOf(path.join('output', ...area), currentOutputPath, true);
+			} catch (error) {
+				throw new AccessError('Output path must be inside ' + path.join(...area));
+			}
+
+			return this.convert(presetsList, input, output, name, meta);
+		} else {
+			throw new Error();
+		}
 	}
 
 	static validatePathOf(containerPath: string, targetPath: string, strict = false) {
