@@ -6,7 +6,7 @@ type Option = Options.Option;
 import './ImageWatermarkToIMOperations';
 
 import convertStringToInterlaceType from './helpers/convertStringToInterlaceType';
-import convertParamsToGeometry from './helpers/convertParamsToGeometry';
+import convertParamsToResizeOperations from './helpers/convertParamsToResizeOperations';
 
 declare module "../../Models/Image" {
 	interface Image {
@@ -15,9 +15,9 @@ declare module "../../Models/Image" {
 }
 
 Image.prototype.toIMOperations = function (): Option[] {
-	let operations = [];
+	let operations: Option[] = [];
 
-	operations.push(new Operators.Resize(convertParamsToGeometry(this.method, this.size[0], this.size[1])));
+	operations.splice(0, 0, ...convertParamsToResizeOperations(this.method, this.size[0], this.size[1]));
 	if (this.quality) {
 		operations.push(new Settings.Quality(this.quality));
 	}
