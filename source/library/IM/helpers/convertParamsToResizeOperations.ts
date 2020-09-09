@@ -7,7 +7,8 @@ export function convertParamsToResizeOperations(method: 'trim' | 'scale', width:
 			return [
 				new Operators.Resize(new Geometry.Minimum(width, height)),
 				new Settings.Gravity(Settings.GravityType.Center),
-				new SequenceOperators.Crop(new Geometry.Offsetted(new Geometry.Maximum(width, height), new Geometry.Offset(0, 0)))
+				new SequenceOperators.Crop(new Geometry.Offsetted(new Geometry.Maximum(width, height), new Geometry.Offset(0, 0))),
+				new Operators.Repage(),
 			 ];
 		case 'scale':
 			return [new Operators.Resize(new Geometry.Maximum(width, height))];

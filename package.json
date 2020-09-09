@@ -14,7 +14,7 @@
 		"test": "mocha -r ts-node/register source/**/*test.ts"
 	},
 	"dependencies": {
-		"imagemagick-cli-wrapper": "git+https://github.com/a-chepugov/imagemagick-cli-wrapper.git#cfb2b6ad2ee3330ec921d8178c37a73fcf502fc0"
+		"imagemagick-cli-wrapper": "git+https://github.com/a-chepugov/imagemagick-cli-wrapper.git#9ecbb390250ef67057f773bc07c2c3ff916e64e9"
 	},
 	"devDependencies": {
 		"@types/chai": "^4.2.12",
