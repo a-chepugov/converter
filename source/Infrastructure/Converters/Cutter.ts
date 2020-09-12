@@ -1,6 +1,9 @@
 import {spawn} from '../../library/Process';
+
 const path = require('path');
 import {Input, Output, Operators, Convert, SequenceOperators} from 'imagemagick-cli-wrapper';
+import Semaphore from '../../library/Semaphore';
+
 
 import Image from '../../Models/Image';
 import {Image as ImagePreset} from '../../Models/Preset';
@@ -15,6 +18,8 @@ export class ConvertError extends Error {
 }
 
 const STATIC_PATH = 'static';
+
+const semaphore = new Semaphore();
 
 export class Cutter {
 
@@ -42,24 +47,34 @@ export class Cutter {
 	}
 
 	static convert(presetsList: ImagePreset[], input: string, output: string, name: string) {
-		const inputImage = new Image(path.dirname(input), path.basename(input));
-		if (Array.isArray(presetsList) && presetsList.length) {
-			const outputImages = presetsList.map((preset) => fromPreset.toImage(output, name, preset, STATIC_PATH))
+		return semaphore.enter()
+			.then(() => {
+				const inputImage = new Image(path.dirname(input), path.basename(input));
+				if (Array.isArray(presetsList) && presetsList.length) {
+					const outputImages = presetsList.map((preset) => fromPreset.toImage(output, name, preset, STATIC_PATH))
 
-			const convert = Cutter.buildConvertFromImages(inputImage, outputImages);
+					const convert = Cutter.buildConvertFromImages(inputImage, outputImages);
 
-			return spawn.apply(null, convert.build())
-				.then(() => outputImages.map((i) => i.fullname))
-				.catch((error: any) => {
-					const e = new ConvertError(`${JSON.stringify(arguments)}. ${error.message}`);
-					e.code = error.code;
-					throw e;
-				})
-		} else {
-			throw new InvalidPresetError('Invalid conversions list');
-		}
+					return spawn.apply(null, convert.build())
+						.then(() => outputImages.map((i) => i.fullname))
+						.catch((error: any) => {
+							const e = new ConvertError(`${JSON.stringify(arguments)}. ${error.message}`);
+							e.code = error.code;
+							throw e;
+						})
+				} else {
+					throw new InvalidPresetError('Invalid conversions list');
+				}
+			})
+			.then((response) => {
+				semaphore.leave();
+				return response;
+			})
+			.catch((error) => {
+				semaphore.leave();
+				throw error;
+			})
 	}
-
 }
 
 export default Cutter;
