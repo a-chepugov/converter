@@ -22,7 +22,7 @@ const convertErrorHandler = (error: any) => {
 		error.code = 422;
 	}
 	if (error instanceof ConvertError) {
-		error.reason = 'Conversion error. Code: ' + error.code;
+		error.reason = `Conversion error. Code: ${error.code}. ${error.message}`;
 		error.code = 500;
 	}
 	throw error;
