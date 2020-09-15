@@ -19,7 +19,7 @@ export class ConvertError extends Error {
 
 const STATIC_PATH = 'static';
 
-const semaphore = new Semaphore();
+const semaphore = new Semaphore(3);
 
 export class Cutter {
 
