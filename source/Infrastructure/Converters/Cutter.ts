@@ -21,7 +21,7 @@ const STATIC_PATH = 'static';
 
 const semaphore = new Semaphore(3);
 
-const MAX_DURATION = 60000;
+const MAX_DURATION = 120000;
 
 export class Cutter {
 

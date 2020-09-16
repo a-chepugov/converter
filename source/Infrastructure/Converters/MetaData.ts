@@ -5,7 +5,7 @@ import Meta from '../../Models/Meta';
 import {Exiftool, Input, Tags} from '../../library/exiftool-wrapper';
 import '../../library/Meta2Exiftool';
 
-const MAX_DURATION = 60000;
+const MAX_DURATION = 120000;
 
 const allowedExtensions = ['.jpg', '.png'];
 
