@@ -21,6 +21,8 @@ const STATIC_PATH = 'static';
 
 const semaphore = new Semaphore(3);
 
+const MAX_DURATION = 60000;
+
 export class Cutter {
 
 	static buildConvertFromImages(inputImage: Image, outputImages: Image[]) {
@@ -55,7 +57,22 @@ export class Cutter {
 
 					const convert = Cutter.buildConvertFromImages(inputImage, outputImages);
 
-					return spawn.apply(null, convert.build())
+					return new Promise((resolve, reject) => {
+							let finished = false;
+							const process = spawn(convert.build(), (error) => {
+								if (finished) return;
+								finished = true;
+								error ? reject(error) : resolve();
+							});
+
+							setTimeout(() => {
+								if (finished) return;
+								finished = true;
+								process.kill(9);
+								reject(new Error('convert stuck'));
+							}, MAX_DURATION)
+						}
+					)
 						.then(() => outputImages.map((i) => i.fullname))
 						.catch((error: any) => {
 							const e = new ConvertError(`${JSON.stringify(arguments)}. ${error.message}`);

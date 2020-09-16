@@ -5,8 +5,7 @@ import Meta from '../../Models/Meta';
 import {Exiftool, Input, Tags} from '../../library/exiftool-wrapper';
 import '../../library/Meta2Exiftool';
 
-export class MetaDataError extends Error {
-}
+const MAX_DURATION = 60000;
 
 const allowedExtensions = ['.jpg', '.png'];
 
@@ -23,7 +22,22 @@ export class MetaData {
 			.with(new Tags.OverwriteOriginal())
 			.append(options.options)
 
-		return spawn.apply(null, exifCommand.build())
+		return new Promise((resolve, reject) => {
+				let finished = false;
+				const process = spawn(exifCommand.build(), (error) => {
+					if (finished) return;
+					finished = true;
+					error ? reject(error) : resolve();
+				});
+
+				setTimeout(() => {
+					if (finished) return;
+					finished = true;
+					process.kill(9);
+					reject(new Error('exiftool stuck'));
+				}, MAX_DURATION)
+			}
+		)
 			.then(() => files, () => files)
 	}
 
