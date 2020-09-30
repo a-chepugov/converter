@@ -14,7 +14,9 @@
 		"test": "mocha -r ts-node/register source/**/*test.ts"
 	},
 	"dependencies": {
-		"imagemagick-cli-wrapper": "git+https://github.com/a-chepugov/imagemagick-cli-wrapper.git#9ecbb390250ef67057f773bc07c2c3ff916e64e9"
+		"@types/node": "^12.12.54",
+		"imagemagick-cli-wrapper": "git+https://github.com/a-chepugov/imagemagick-cli-wrapper.git#9ecbb390250ef67057f773bc07c2c3ff916e64e9",
+		"typescript": "^3.9.7"
 	},
 	"devDependencies": {
 		"@types/chai": "^4.2.12",
@@ -24,10 +26,6 @@
 		"nodemon": "^2.0.4",
 		"ts-node": "^8.10.2",
 		"typedoc": "^0.17.8"
-	},
-	"optionalDependencies": {
-		"@types/node": "^12.12.54",
-		"typescript": "^3.9.7"
 	},
 	"config": {
 		"unsafe-perm": true
