@@ -18,6 +18,7 @@ ImageWatermark.prototype.toIMOperations = function (): Option[] {
 	}
 
 	if (this.text) {
+		parameters.push(new Settings.Colorspace(Settings.ColorspaceType.RGB));
 		parameters.push(new Settings.Pointsize(this.text.size));
 		parameters.push(new Settings.Fill(this.text.color));
 		parameters.push(new Settings.Font(this.text.font));
