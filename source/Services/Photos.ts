@@ -37,6 +37,7 @@ export class Photos {
 		return Cutter.convert(presets, currentInputPath, currentOutputPath, name)
 			.then(MetaData.insert(meta))
 			.then((response: string[]) => response.map(i => path.relative(outputsDir, i)))
+			.then((response: string[]) => response.map((filename) => ({filename})))
 	}
 
 	async convertWithAreaPresets(area: string[], presetsNames: string[], input: string, output: string, name: string, meta: Meta) {

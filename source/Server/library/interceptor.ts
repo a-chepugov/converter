@@ -5,7 +5,10 @@ import {Context} from '../../library/Server';
 export const interceptor = (ctx: Context, error: any) => {
 	if (!ctx.response.finished) {
 		ctx.response.statusCode = error && error.code ? error.code : 500;
-		ctx.response.end(error && error.reason ? error.reason : STATUS_CODES[ctx.response.statusCode]);
+		const response = (error && (error.id || error.reason)) ?
+			JSON.stringify({message: error.reason}) :
+			STATUS_CODES[ctx.response.statusCode];
+		ctx.response.end(response);
 	}
 
 	if (error && error.message) {

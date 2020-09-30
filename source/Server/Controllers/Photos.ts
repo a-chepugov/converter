@@ -35,7 +35,7 @@ export function convertWithAreaPresets(ctx: Context, body: { [key: string]: any 
 		.convertWithAreaPresets(area, presets, input, output, name, meta)
 		.then((response: any) => {
 			ctx.response.setHeader('X-COMPLETED-IN', profiler.end().result);
-			return response;
+			return {data: response};
 		})
 		.catch(convertErrorHandler);
 }
@@ -46,7 +46,7 @@ export function convertMixed(ctx: Context, body: { [key: string]: any }) {
 	return photos.convertMixed(area, presets, input, output, name, meta)
 		.then((response: any) => {
 			ctx.response.setHeader('X-COMPLETED-IN', profiler.end().result);
-			return response;
+			return {data: response};
 		})
 		.catch(convertErrorHandler);
 }
@@ -57,7 +57,7 @@ export function convert(ctx: Context, body: { [key: string]: any }) {
 	return photos.convert(presets, input, output, name, meta)
 		.then((response: any) => {
 			ctx.response.setHeader('X-COMPLETED-IN', profiler.end().result);
-			return response;
+			return {data: response};
 		})
 		.catch(convertErrorHandler);
 }
