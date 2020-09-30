@@ -19,7 +19,7 @@ const presets: { [key: string]: Image } = {
 		watermarks: [{
 			align: 'right',
 			valign: 'top',
-			x: 14,
+			x: 44,
 			y: -33,
 			size: 150,
 			color: '#ffffffB0',
@@ -39,7 +39,7 @@ const presets: { [key: string]: Image } = {
 		watermarks: [{
 			align: 'right',
 			valign: 'top',
-			x: 14,
+			x: 44,
 			y: -33,
 			size: 150,
 			color: '#ffffffB0',
@@ -59,7 +59,7 @@ const presets: { [key: string]: Image } = {
 		watermarks: [{
 			align: 'right',
 			valign: 'top',
-			x: 13,
+			x: 43,
 			y: -34,
 			size: 150,
 			color: '#ffffffB0',
@@ -79,7 +79,7 @@ const presets: { [key: string]: Image } = {
 		watermarks: [{
 			align: 'right',
 			valign: 'top',
-			x: 13,
+			x: 43,
 			y: -34,
 			size: 150,
 			color: '#ffffffB0',
@@ -98,7 +98,7 @@ const presets: { [key: string]: Image } = {
 		watermarks: [{
 			align: 'right',
 			valign: 'top',
-			x: 8,
+			x: 30,
 			y: -24,
 			size: 110,
 			color: '#ffffffB0',
@@ -117,7 +117,7 @@ const presets: { [key: string]: Image } = {
 		watermarks: [{
 			align: 'right',
 			valign: 'top',
-			x: 8,
+			x: 30,
 			y: -24,
 			size: 110,
 			color: '#ffffffB0',
@@ -136,7 +136,7 @@ const presets: { [key: string]: Image } = {
 		watermarks: [{
 			align: 'right',
 			valign: 'top',
-			x: 7,
+			x: 23,
 			y: -17,
 			size: 80,
 			color: '#ffffffB0',
@@ -155,7 +155,7 @@ const presets: { [key: string]: Image } = {
 		watermarks: [{
 			align: 'right',
 			valign: 'top',
-			x: 7,
+			x: 23,
 			y: -17,
 			size: 80,
 			color: '#ffffffB0',
@@ -174,7 +174,7 @@ const presets: { [key: string]: Image } = {
 		watermarks: [{
 			align: 'right',
 			valign: 'top',
-			x: 7,
+			x: 23,
 			y: -17,
 			size: 80,
 			color: '#ffffffB0',
@@ -193,7 +193,7 @@ const presets: { [key: string]: Image } = {
 		watermarks: [{
 			align: 'right',
 			valign: 'top',
-			x: 7,
+			x: 23,
 			y: -17,
 			size: 80,
 			color: '#ffffffB0',
