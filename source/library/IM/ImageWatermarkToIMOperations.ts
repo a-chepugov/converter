@@ -23,10 +23,7 @@ ImageWatermark.prototype.toIMOperations = function (): Option[] {
 		parameters.push(new Settings.Pointsize(this.text.size));
 		parameters.push(new Settings.Fill(this.text.color));
 		parameters.push(new Settings.Font(this.text.font));
-	}
-
-	if (this.offset) {
-		parameters.push(new Operators.Annotate.DegreesXYTxTy(this.offset.degreesX, this.offset.degreesY, this.offset.x, this.offset.y, 'i'))
+		parameters.push(new Operators.Annotate.DegreesXYTxTy(this.offset.degreesX, this.offset.degreesY, this.offset.x, this.offset.y, this.text.text))
 	}
 
 	return parameters;
