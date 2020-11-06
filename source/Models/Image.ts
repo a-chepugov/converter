@@ -1,6 +1,8 @@
 import ImageWatermark from './ImageWatermark';
 import {normalize, join} from 'path';
 
+import {RESIZE_METHOD} from "../Models/Preset"
+
 export type Size = [number, number];
 export type Unsharp = [number, number, number, number];
 
@@ -10,7 +12,7 @@ export class Image {
 	protected readonly extension: string;
 	size: Size;
 	quality: number;
-	method: 'trim' | 'scale';
+	method: RESIZE_METHOD;
 	unsharp: Unsharp;
 	interlace: string;
 	watermarks: ImageWatermark[];

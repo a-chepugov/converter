@@ -1,8 +1,13 @@
 import {Geometry, Operators, SequenceOperators, Settings} from 'imagemagick-cli-wrapper';
 
+import {RESIZE_METHOD} from "../../../Models/Preset"
 
-export function convertParamsToResizeOperations(method: 'trim' | 'scale', width: number, height: number) {
+export function convertParamsToResizeOperations(method: RESIZE_METHOD, width: number, height: number) {
 	switch (method) {
+		case 'shrink':
+			return [
+				new Operators.Resize(new Geometry.Shrink(width, height))
+			];
 		case 'trim':
 			return [
 				new Operators.Resize(new Geometry.Minimum(width, height)),

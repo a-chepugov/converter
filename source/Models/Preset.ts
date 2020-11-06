@@ -2,12 +2,14 @@ export interface Area {
 	parameters: { [key: string]: Image }
 }
 
+export type RESIZE_METHOD = 'trim' | 'scale' | 'shrink';
+
 export interface Image {
 	suffix?: string,
 	extension: string,
 	width: number,
 	height: number,
-	method: 'trim' | 'scale',
+	method: RESIZE_METHOD,
 	quality?: number,
 	unsharp?: [number, number, number, number],
 	interlace?: string,

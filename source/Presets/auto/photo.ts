@@ -5,7 +5,7 @@ const presets: { [key: string]: Image } = {
 		extension: 'jpeg',
 		width: 1600,
 		height: 1200,
-		method: 'scale',
+		method: 'shrink',
 	},
 	fx_jpg: {
 		extension: 'jpg',
