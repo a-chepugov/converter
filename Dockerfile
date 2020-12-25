@@ -13,7 +13,7 @@ RUN apk add exiftool imagemagick git;
 WORKDIR /srv
 
 COPY package*.json ./
-RUN echo $NODE_ENV; npm install --production --unsafe-perm;
+RUN echo $NODE_ENV; npm install --production;
 
 COPY . ./
 RUN npm run build;
