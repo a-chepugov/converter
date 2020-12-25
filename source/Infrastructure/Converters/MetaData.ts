@@ -27,7 +27,7 @@ export class MetaData {
 				const process = spawn(exifCommand.build(), (error) => {
 					if (finished) return;
 					finished = true;
-					error ? reject(error) : resolve();
+					error ? reject(error) : resolve(undefined);
 				});
 
 				setTimeout(() => {

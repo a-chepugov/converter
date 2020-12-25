@@ -62,7 +62,7 @@ export class Cutter {
 							const process = spawn(convert.build(), (error) => {
 								if (finished) return;
 								finished = true;
-								error ? reject(error) : resolve();
+								error ? reject(error) : resolve(undefined);
 							});
 
 							setTimeout(() => {
