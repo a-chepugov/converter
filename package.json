@@ -1,6 +1,6 @@
 {
 	"name": "converter",
-	"version": "1.1.4",
+	"version": "1.1.5",
 	"description": "Based on ImageMagick and ExifTool applications image converter",
 	"main": "index.js",
 	"module": "index.ts",
@@ -16,7 +16,7 @@
 	"dependencies": {
 		"@types/node": "^12.12.54",
 		"imagemagick-cli-wrapper": "git+https://github.com/a-chepugov/imagemagick-cli-wrapper.git#6abfa6694b04deefa0792de7a69f646525a0ad08",
-		"typescript": "^3.9.7"
+		"typescript": "^4.1.3"
 	},
 	"devDependencies": {
 		"@types/chai": "^4.2.12",
