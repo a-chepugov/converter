@@ -8,7 +8,11 @@ EXPOSE 80
 HEALTHCHECK --interval=1m --timeout=5s --start-period=5s --retries=3 \
 	CMD curl -f -s -o /dev/null http://localhost/ping || exit 1
 
-RUN apk add exiftool imagemagick git;
+RUN apk add \
+exiftool \
+imagemagick \
+git \
+curl;
 
 WORKDIR /srv
 
