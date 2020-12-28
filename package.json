@@ -7,6 +7,7 @@
 	"scripts": {
 		"build": "tsc",
 		"start": "npm run server",
+		"start:watch": "npm run server:ts:watch",
 		"server": "node build/index.js",
 		"server:watch": "nodemon -e js -w ./build -x npm run server",
 		"server:ts": "ts-node source/index.ts",
