@@ -1,7 +1,7 @@
 import {spawn} from '../../library/Process';
 
 const path = require('path');
-import {Input, Output, Operators, Convert, SequenceOperators} from 'imagemagick-cli-wrapper';
+import {Input, Output, Operators, Magick, SequenceOperators} from 'imagemagick-cli-wrapper';
 import Semaphore from '../../library/Semaphore';
 
 
@@ -30,14 +30,14 @@ export class Cutter {
 			const [image, ...rest] = outputImages;
 			const firstImageOperations = image.toIMOperations();
 
-			const convert = Convert
+			const convert = Magick
 				.of(new Input.Globbing(inputImage.fullname))
 				.into(new Output.Filename(image.fullname))
 				.with(new Operators.Strip())
 			;
 
 			return rest
-				.reduce((convert: Convert, image: Image) => {
+				.reduce((convert: Magick, image: Image) => {
 					const operations = image.toIMOperations()
 					operations.push(new SequenceOperators.Write(image.fullname));
 					return convert.fork(operations);
