@@ -1,8 +1,6 @@
-import {Operators, Settings, Options} from 'imagemagick-cli-wrapper';
-
+import {Operators, Settings, Option} from 'imagemagick-cli-wrapper';
 import Image from '../../Models/Image';
 import ImageWatermark from '../../Models/ImageWatermark';
-type Option = Options.Option;
 import './ImageWatermarkToIMOperations';
 
 import convertStringToInterlaceType from './helpers/convertStringToInterlaceType';

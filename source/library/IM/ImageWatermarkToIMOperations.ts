@@ -1,5 +1,4 @@
-import {Operators, Options, Settings} from 'imagemagick-cli-wrapper';
-type Option = Options.Option;
+import {Operators, Option, Settings} from 'imagemagick-cli-wrapper';
 import ImageWatermark from '../../Models/ImageWatermark';
 import convertAlignToGravityType from './helpers/convertAlignToGravityType';
 
