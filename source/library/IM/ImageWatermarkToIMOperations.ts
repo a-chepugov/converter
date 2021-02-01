@@ -13,7 +13,7 @@ ImageWatermark.prototype.toIMOperations = function (): Option[] {
 
 	const gravityType = convertAlignToGravityType(this.align, this.valign);
 	if (gravityType) {
-		parameters.push(new Settings.Gravity(Settings.GravityType.NorthEast));
+		parameters.push(new Settings.Gravity(gravityType));
 	}
 
 	if (this.text) {
