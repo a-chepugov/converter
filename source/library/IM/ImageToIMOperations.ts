@@ -15,7 +15,14 @@ declare module "../../Models/Image" {
 Image.prototype.toIMOperations = function (): Option[] {
 	let operations: Option[] = [];
 
-	operations.splice(0, 0, ...convertParamsToResizeOperations(this.method, this.size[0], this.size[1]));
+	if (this.size && (this.size[0] !== undefined || this.size[1] !== undefined)) {
+		operations.splice(0, 0, ...convertParamsToResizeOperations(this.size[0], this.size[1], this.method));
+	}
+
+	if (this.rotate) {
+		operations.push(new Operators.Rotate(this.rotate));
+	}
+
 	if (this.quality) {
 		operations.push(new Settings.Quality(this.quality));
 	}
@@ -25,11 +32,8 @@ Image.prototype.toIMOperations = function (): Option[] {
 	}
 
 	if (this.interlace) {
-		if (convertStringToInterlaceType(this.interlace)) {
-			operations.push(new Settings.Interlace(this.interlace));
-		}
+		operations.push(new Settings.Interlace(convertStringToInterlaceType(this.interlace)));
 	}
-
 
 	if (Array.isArray(this.watermarks) && this.watermarks.length) {
 		operations = this.watermarks
@@ -38,6 +42,8 @@ Image.prototype.toIMOperations = function (): Option[] {
 				return operations.concat(watermarkOperations);
 			}, operations)
 	}
+
+	operations.push(new Settings.Colorspace(Settings.ColorspaceType.RGB));
 
 	return operations;
 };

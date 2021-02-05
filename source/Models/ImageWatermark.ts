@@ -1,11 +1,13 @@
-export type Offset = { degreesX?: number, degreesY?: number, x?: number, y?: number };
+export type Offset = { x?: number, y?: number };
 export type Text = { font: string; size: number; color: string; text: string };
 
-export class ImageWatermark {
-	text: Text;
-	offset: Offset;
-	align: 'left' | 'center' | 'right';
-	valign: 'top' | 'center' | 'bottom';
+import {Align, Valign} from "../Models/Preset"
+
+export abstract class ImageWatermark {
+	align?: Align;
+	valign?: Valign;
+	offset?: Offset;
+	rotate?: number;
 
 	set<K extends keyof this>(name: K, value: this[K]) {
 		this[name] = value;
@@ -14,3 +16,13 @@ export class ImageWatermark {
 }
 
 export default ImageWatermark;
+
+export class ImageWatermarkText extends ImageWatermark {
+	text: Text;
+}
+
+export class ImageWatermarkImage extends ImageWatermark {
+	source: string;
+	size?: number;
+}
+

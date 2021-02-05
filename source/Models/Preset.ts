@@ -2,27 +2,41 @@ export interface Area {
 	parameters: { [key: string]: Image }
 }
 
-export type RESIZE_METHOD = 'trim' | 'scale' | 'shrink';
+export type ResizeMethod = 'trim' | 'scale' | 'shrink';
+export type Align = 'left' | 'center' | 'right';
+export type Valign = 'top' | 'center' | 'bottom';
+
+export type Watermark = WatermarkText | WatermarkImage;
 
 export interface Image {
 	suffix?: string,
 	extension: string,
 	width: number,
 	height: number,
-	method: RESIZE_METHOD,
+	method: ResizeMethod,
+	rotate?: number,
 	quality?: number,
 	unsharp?: [number, number, number, number],
 	interlace?: string,
 	watermarks?: Watermark[]
 }
 
-export interface Watermark {
-	align: 'left' | 'center' | 'right',
-	valign: 'top' | 'center' | 'bottom',
+interface WatermarkBase {
+	align: Align,
+	valign: Valign,
 	x: number,
 	y: number,
-	size: number,
+	rotate?: number,
+}
+
+export interface WatermarkText extends WatermarkBase {
+	size?: number,
 	color: string,
 	font: string
 	text: string,
+}
+
+export interface WatermarkImage extends WatermarkBase {
+	size?: number,
+	source: string,
 }

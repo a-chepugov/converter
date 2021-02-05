@@ -52,13 +52,12 @@ export function convertMixed(ctx: Context, body: { [key: string]: any }) {
 }
 
 export function convert(ctx: Context, body: { [key: string]: any }) {
-	const profiler = profilerConvert.start(':convertWithPresets');
-	const {input, output, name, presets, meta} = body;
-	return photos.convert(presets, input, output, name, meta)
+	const profiler = profilerConvert.start(':convert');
+	const {input, output, name, area, presets, meta} = body;
+	return photos.convertExtendable(area, presets, input, output, name, meta)
 		.then((response: any) => {
 			ctx.response.setHeader('X-COMPLETED-IN', profiler.end().result);
 			return {data: response};
 		})
 		.catch(convertErrorHandler);
 }
-

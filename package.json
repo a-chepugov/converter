@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"@types/node": "^12.12.54",
-		"imagemagick-cli-wrapper": "git+https://github.com/a-chepugov/imagemagick-cli-wrapper.git#cf99ef93a32347beac4d74f7f4a79919aa6a4c9e",
+		"imagemagick-cli-wrapper": "git+https://github.com/a-chepugov/imagemagick-cli-wrapper.git#f42aab7d5c04c2d0703cec9c92b3a21df1f32544",
 		"typescript": "^4.1.3"
 	},
 	"devDependencies": {

@@ -19,6 +19,10 @@ export class AccessError extends Error {
 export class InputError extends Error {
 }
 
+interface ImagePresetExtendable extends ImagePreset {
+	extends: string
+}
+
 const inputsDir = path.join('.', 'input');
 const outputsDir = path.join('.', 'output');
 
@@ -84,6 +88,41 @@ export class Photos {
 					}
 				})
 
+			try {
+				const currentOutputPath = path.join(outputsDir, output);
+				Photos.validatePathOf(path.join('output', ...area), currentOutputPath, true);
+			} catch (error) {
+				throw new AccessError('Output path must be inside ' + path.join(...area));
+			}
+
+			return this.convert(presetsList, input, output, name, meta);
+		} else {
+			throw new Error();
+		}
+	}
+
+	async convertExtendable(area: string[], presets: ImagePresetExtendable[], input: string, output: string, name: string, meta: Meta) {
+		const areaPresets = Presets.byArea(area);
+
+		function extendPreset(presetExtendable: ImagePresetExtendable): ImagePreset {
+			if (typeof presetExtendable.extends === 'string') {
+				const preset = areaPresets.parameters[presetExtendable.extends];
+				if (preset) {
+					let watermarks = Array.isArray(preset.watermarks) ? preset.watermarks : [];
+					if(Array.isArray(presetExtendable.watermarks) && presetExtendable.watermarks.length) {
+						watermarks = watermarks.concat(presetExtendable.watermarks);
+					}
+					return Object.assign({}, preset, presetExtendable, {watermarks});
+				} else {
+					throw new InvalidPresetError(`Invalid preset name: ${presetExtendable.extends}`);
+				}
+			} else {
+				return presetExtendable;
+			}
+		}
+
+		if (Array.isArray(presets) && presets.length) {
+			const presetsList = presets.map((presetExtends: ImagePresetExtendable) => extendPreset(presetExtends));
 			try {
 				const currentOutputPath = path.join(outputsDir, output);
 				Photos.validatePathOf(path.join('output', ...area), currentOutputPath, true);
