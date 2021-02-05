@@ -15,7 +15,9 @@ declare module "../../Models/Image" {
 Image.prototype.toIMOperations = function (): Option[] {
 	let operations: Option[] = [];
 
-	operations.splice(0, 0, ...convertParamsToResizeOperations(this.size[0], this.size[1], this.method));
+	if (this.size && (this.size[0] !== undefined || this.size[1] !== undefined)) {
+		operations.splice(0, 0, ...convertParamsToResizeOperations(this.size[0], this.size[1], this.method));
+	}
 
 	if (this.rotate) {
 		operations.push(new Operators.Rotate(this.rotate));
