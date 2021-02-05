@@ -32,11 +32,8 @@ Image.prototype.toIMOperations = function (): Option[] {
 	}
 
 	if (this.interlace) {
-		if (convertStringToInterlaceType(this.interlace)) {
-			operations.push(new Settings.Interlace(this.interlace));
-		}
+		operations.push(new Settings.Interlace(convertStringToInterlaceType(this.interlace)));
 	}
-
 
 	if (Array.isArray(this.watermarks) && this.watermarks.length) {
 		operations = this.watermarks
