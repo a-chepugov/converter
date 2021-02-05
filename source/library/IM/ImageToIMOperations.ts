@@ -44,5 +44,7 @@ Image.prototype.toIMOperations = function (): Option[] {
 			}, operations)
 	}
 
+	operations.push(new Settings.Colorspace(Settings.ColorspaceType.RGB));
+
 	return operations;
 };
