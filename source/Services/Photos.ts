@@ -35,6 +35,10 @@ export class Photos {
 		await mkdirp(currentOutputPath);
 
 		return Cutter.convert(presets, currentInputPath, currentOutputPath, name)
+			.catch(async (error) => {
+				await clean(currentOutputPath);
+				throw error;
+			})
 			.then(MetaData.insert(meta))
 			.then((response: string[]) => response.map(i => path.relative(outputsDir, i)))
 			.then((response: string[]) => response.map((filename) => ({filename})))
