@@ -16,6 +16,11 @@ Image.prototype.toIMOperations = function (): Option[] {
 	let operations: Option[] = [];
 
 	operations.splice(0, 0, ...convertParamsToResizeOperations(this.size[0], this.size[1], this.method));
+
+	if (this.rotate) {
+		operations.push(new Operators.Rotate(this.rotate));
+	}
+
 	if (this.quality) {
 		operations.push(new Settings.Quality(this.quality));
 	}
