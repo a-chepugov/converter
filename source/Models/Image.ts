@@ -1,7 +1,7 @@
 import ImageWatermark from './ImageWatermark';
 import {normalize, join} from 'path';
 
-import {RESIZE_METHOD} from "../Models/Preset"
+import {ResizeMethod} from "../Models/Preset"
 
 export type Size = [number, number];
 export type Unsharp = [number, number, number, number];
@@ -11,11 +11,12 @@ export class Image {
 	protected readonly name: string;
 	protected readonly extension: string;
 	size: Size;
-	quality: number;
-	method: RESIZE_METHOD;
-	unsharp: Unsharp;
-	interlace: string;
-	watermarks: ImageWatermark[];
+	method: ResizeMethod;
+	quality?: number;
+	rotate?: number;
+	unsharp?: Unsharp;
+	interlace?: string;
+	watermarks?: ImageWatermark[];
 
 	constructor(path: string, name: string) {
 		this.path = path;
