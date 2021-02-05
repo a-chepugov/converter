@@ -45,6 +45,10 @@ export function toImage(output: string, name: string, preset: ImagePreset, stati
 		image.set('method', preset.method)
 	}
 
+	if (preset.rotate) {
+		image.set('rotate', preset.rotate)
+	}
+
 	if (preset.quality) {
 		image.set('quality', preset.quality)
 	}
