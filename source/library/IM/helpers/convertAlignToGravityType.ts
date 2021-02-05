@@ -2,10 +2,9 @@ import {Settings} from 'imagemagick-cli-wrapper';
 
 const GravityType = Settings.GravityType;
 
-export function convertAlignToGravityType(
-	align: 'left' | 'center' | 'right',
-	valign: 'top' | 'center' | 'bottom'
-) {
+import {Align, Valign} from "../../../Models/Preset"
+
+export function convertAlignToGravityType(align: Align,	valign: Valign) {
 	switch (true) {
 		case align === 'left':
 			switch (true) {

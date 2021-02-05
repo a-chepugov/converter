@@ -2,11 +2,11 @@ import {Geometry, Operators, SequenceOperators, Settings, Expressions} from 'ima
 
 const Fx = Expressions.Fx;
 
-import {RESIZE_METHOD} from "../../../Models/Preset"
+import {ResizeMethod} from "../../../Models/Preset"
 
 const expressedSizesWithFx = (width: number, height: number) => [new Fx(`w>=h?${width}:${height}`), new Fx(`w>=h?${height}:${width}`)];
 
-export function convertParamsToResizeOperations(method: RESIZE_METHOD, width: number, height: number) {
+export function convertParamsToResizeOperations(width: number, height: number, method: ResizeMethod) {
 	const [widthFx, heightFx] = expressedSizesWithFx(width, height);
 	switch (method) {
 		case 'shrink':

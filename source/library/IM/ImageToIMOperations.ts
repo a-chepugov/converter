@@ -15,7 +15,7 @@ declare module "../../Models/Image" {
 Image.prototype.toIMOperations = function (): Option[] {
 	let operations: Option[] = [];
 
-	operations.splice(0, 0, ...convertParamsToResizeOperations(this.method, this.size[0], this.size[1]));
+	operations.splice(0, 0, ...convertParamsToResizeOperations(this.size[0], this.size[1], this.method));
 	if (this.quality) {
 		operations.push(new Settings.Quality(this.quality));
 	}
