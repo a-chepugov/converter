@@ -2,6 +2,7 @@ import * as path from "path";
 import {isOutsideOf, isTheSame} from "../library/path";
 import {mkdirp, clean} from "../library/fs";
 
+import Image from "../Models/Image";
 import Meta from "../Models/Meta";
 import {Image as ImagePreset} from "../Models/Preset";
 
@@ -43,9 +44,8 @@ export class Photos {
 				await clean(currentOutputPath);
 				throw error;
 			})
-			.then(MetaData.insert(meta))
-			.then((response: string[]) => response.map(i => path.relative(outputsDir, i)))
-			.then((response: string[]) => response.map((filename) => ({filename})))
+			.then((images) => MetaData.insert(meta)(images).then(() => images, () => images))
+			.then((response: Image[]) => response.map((i) => ({filename: path.relative(outputsDir, i.fullname)})))
 	}
 
 	async convertWithAreaPresets(area: string[], presetsNames: string[], input: string, output: string, name: string, meta: Meta) {

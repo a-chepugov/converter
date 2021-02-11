@@ -73,7 +73,7 @@ export class Cutter {
 							}, MAX_DURATION)
 						}
 					)
-						.then(() => outputImages.map((i) => i.fullname))
+						.then(() => outputImages)
 						.catch((error: any) => {
 							const e = new ConvertError(`${JSON.stringify(arguments)}. ${error.message}`);
 							e.code = error.code;

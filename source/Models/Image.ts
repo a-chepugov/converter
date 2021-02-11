@@ -24,7 +24,7 @@ export class Image {
 	}
 
 	set<K extends keyof this>(name: K, value: this[K]) {
-		Object.defineProperty(this, name, {value});
+		this[name] = value;
 		return this;
 	}
 

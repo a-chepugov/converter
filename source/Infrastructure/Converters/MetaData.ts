@@ -1,6 +1,7 @@
 const {extname} = require('path');
 import {spawn} from '../../library/Process'
 
+import Image from '../../Models/Image';
 import Meta from '../../Models/Meta';
 import {Exiftool, Input, Tags} from '../../library/exiftool-wrapper';
 import '../../library/Meta2Exiftool';
@@ -10,14 +11,14 @@ const MAX_DURATION = 120000;
 const allowedExtensions = ['.jpg', '.png'];
 
 export class MetaData {
-	static insert = (metaRaw: { [name: string]: string }) => (files: string[]) => {
+	static insert = (metaRaw: { [name: string]: string }) => (images: Image[]) => {
 		const options = Meta.from(metaRaw).toExiftoolOptions();
 
 		const exifCommand = Exiftool
 			.of(
-				files
-					.filter((file) => allowedExtensions.includes(extname(file)))
-					.map((file) => Input.Globbing.of(file))
+				images
+					.filter((file) => allowedExtensions.includes(extname(file.fullname)))
+					.map((file) => Input.Globbing.of(file.fullname))
 			)
 			.with(new Tags.OverwriteOriginal())
 			.append(options.options)
@@ -38,7 +39,6 @@ export class MetaData {
 				}, MAX_DURATION)
 			}
 		)
-			.then(() => files, () => files)
 	}
 
 }
