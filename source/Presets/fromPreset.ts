@@ -1,4 +1,5 @@
 import Image from '../Models/Image';
+import Meta from '../Models/Meta';
 import {ImageWatermark, ImageWatermarkText, ImageWatermarkImage} from '../Models/ImageWatermark';
 import {
 	Image as ImagePreset,
@@ -59,6 +60,10 @@ export function toImage(output: string, name: string, preset: ImagePreset, stati
 
 	if (preset.unsharp) {
 		image.set('unsharp', preset.unsharp)
+	}
+
+	if (preset.meta) {
+		image.set('meta', Meta.from(preset.meta))
 	}
 
 	if (Array.isArray(preset.watermarks)) {

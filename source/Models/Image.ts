@@ -1,4 +1,5 @@
 import ImageWatermark from './ImageWatermark';
+import {Meta} from './Meta';
 import {normalize, join} from 'path';
 
 import {ResizeMethod} from "../Models/Preset"
@@ -17,6 +18,7 @@ export class Image {
 	unsharp?: Unsharp;
 	interlace?: string;
 	watermarks?: ImageWatermark[];
+	meta?: Meta;
 
 	constructor(path: string, name: string) {
 		this.path = path;
