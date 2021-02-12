@@ -45,7 +45,7 @@ export class Options {
 	}
 
 	inspect() {
-		return this.options.reduce((result: string[], operation: Option) => result.concat(operation.inspect()), []);
+		return this.options.reduce((result: string[], operation: Option) => result.concat(operation.inspect()), []).join(' ');
 	}
 }
 

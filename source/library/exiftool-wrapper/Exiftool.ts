@@ -25,7 +25,7 @@ export class Exiftool {
 	}
 
 	inspect() {
-		return ['exiftool', Options.of(this.inputs).concat(this.options).inspect()];
+		return ['exiftool', Options.of(this.inputs).concat(this.options).inspect()].join(' ');
 	}
 
 	build() {
