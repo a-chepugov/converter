@@ -3,8 +3,7 @@ import {isOutsideOf, isTheSame} from "../library/path";
 import {mkdirp, clean} from "../library/fs";
 
 import Image from "../Models/Image";
-import Meta from "../Models/Meta";
-import {Image as ImagePreset} from "../Models/Preset";
+import {Image as ImagePreset, Meta as MetaPreset} from "../Models/Preset";
 
 import * as Presets from "../Presets";
 
@@ -21,7 +20,8 @@ export class InputError extends Error {
 }
 
 interface ImagePresetExtendable extends ImagePreset {
-	extends: string
+	_extends?: string
+	_inherits_meta?: boolean
 }
 
 const inputsDir = path.join('.', 'input');
@@ -29,7 +29,7 @@ const outputsDir = path.join('.', 'output');
 
 export class Photos {
 
-	async convert(presets: ImagePreset[], input: string, output: string, name: string, meta: any) {
+	async convert(presets: ImagePreset[], input: string, output: string, name: string) {
 		const currentInputPath = path.join(inputsDir, input);
 		const currentOutputPath = path.join(outputsDir, output);
 
@@ -44,17 +44,17 @@ export class Photos {
 				await clean(currentOutputPath);
 				throw error;
 			})
-			.then((images) => MetaData.insert(meta)(images).then(() => images, () => images))
-			.then((response: Image[]) => response.map((i) => ({filename: path.relative(outputsDir, i.fullname)})))
+			.then((images: Array<Image>) => MetaData.insert(images.filter((image) => image.meta)).then(() => images, () => images))
+			.then((images: Image[]) => images.map((image) => ({filename: path.relative(outputsDir, image.fullname)})))
 	}
 
-	async convertWithAreaPresets(area: string[], presetsNames: string[], input: string, output: string, name: string, meta: Meta) {
+	async convertWithAreaPresets(area: string[], presetsNames: string[], input: string, output: string, name: string, meta: MetaPreset) {
 		const presets = Presets.byArea(area);
 		const presetsList = Array.isArray(presetsNames) && presetsNames.length ?
 			presetsNames.map((presetName) => {
 				const preset = presets.parameters[presetName];
 				if (preset) {
-					return preset;
+					return {...preset, meta};
 				} else {
 					throw new InvalidPresetError(`Invalid preset name: ${presetName}`);
 				}
@@ -68,10 +68,10 @@ export class Photos {
 			throw new AccessError('Output path must be inside ' + path.join(...area));
 		}
 
-		return this.convert(presetsList, input, output, name, meta);
+		return this.convert(presetsList, input, output, name);
 	}
 
-	async convertMixed(area: string[], presets: string[] | ImagePreset, input: string, output: string, name: string, meta: Meta) {
+	async convertMixed(area: string[], presets: string[] | ImagePreset, input: string, output: string, name: string, meta: MetaPreset) {
 		const areaPresets = Presets.byArea(area);
 		if (Array.isArray(presets) && presets.length) {
 			const presetsList =
@@ -79,12 +79,13 @@ export class Photos {
 					if (typeof presetConfig === 'string') {
 						const preset = areaPresets.parameters[presetConfig];
 						if (preset) {
-							return preset;
+							return {...preset, meta};
 						} else {
 							throw new InvalidPresetError(`Invalid preset name: ${presetConfig}`);
 						}
 					} else {
-						return presetConfig;
+						/** @ts-ignore */
+						return {...presetConfig, meta} as ImagePreset;
 					}
 				})
 
@@ -95,30 +96,38 @@ export class Photos {
 				throw new AccessError('Output path must be inside ' + path.join(...area));
 			}
 
-			return this.convert(presetsList, input, output, name, meta);
+			return this.convert(presetsList, input, output, name);
 		} else {
 			throw new Error();
 		}
 	}
 
-	async convertExtendable(area: string[], presets: ImagePresetExtendable[], input: string, output: string, name: string, meta: Meta) {
-		const areaPresets = Presets.byArea(area);
+	async convertExtendable(area: string[], presets: ImagePresetExtendable[], input: string, output: string, name: string, meta: MetaPreset) {
+		const presetsDictionary = Presets.byArea(area);
+
+		function buildPresetFromExtendable(presetExtendable: ImagePresetExtendable, presetsDictionary: { [key: string]: ImagePreset }) {
+			const preset = presetsDictionary[presetExtendable._extends];
+			if (preset) {
+				let watermarks = Array.isArray(preset.watermarks) ? preset.watermarks : [];
+				if (Array.isArray(presetExtendable.watermarks) && presetExtendable.watermarks.length) {
+					watermarks = watermarks.concat(presetExtendable.watermarks);
+				}
+				return {...preset, ...presetExtendable, watermarks};
+			} else {
+				throw new InvalidPresetError(`Invalid preset name: ${presetExtendable._extends}`);
+			}
+		}
 
 		function extendPreset(presetExtendable: ImagePresetExtendable): ImagePreset {
-			if (typeof presetExtendable.extends === 'string') {
-				const preset = areaPresets.parameters[presetExtendable.extends];
-				if (preset) {
-					let watermarks = Array.isArray(preset.watermarks) ? preset.watermarks : [];
-					if(Array.isArray(presetExtendable.watermarks) && presetExtendable.watermarks.length) {
-						watermarks = watermarks.concat(presetExtendable.watermarks);
-					}
-					return Object.assign({}, preset, presetExtendable, {watermarks});
-				} else {
-					throw new InvalidPresetError(`Invalid preset name: ${presetExtendable.extends}`);
-				}
-			} else {
-				return presetExtendable;
-			}
+			const preset = typeof presetExtendable._extends === 'string' ?
+				buildPresetFromExtendable(presetExtendable, presetsDictionary.parameters) :
+				presetExtendable;
+
+			preset.meta = (presetExtendable._inherits_meta === false) ?
+				preset.meta :
+				preset.meta ? {...meta, ...preset.meta} : meta;
+
+			return preset;
 		}
 
 		if (Array.isArray(presets) && presets.length) {
@@ -130,7 +139,7 @@ export class Photos {
 				throw new AccessError('Output path must be inside ' + path.join(...area));
 			}
 
-			return this.convert(presetsList, input, output, name, meta);
+			return this.convert(presetsList, input, output, name);
 		} else {
 			throw new Error();
 		}

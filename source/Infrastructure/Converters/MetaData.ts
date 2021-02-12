@@ -8,37 +8,38 @@ import '../../library/Meta2Exiftool';
 
 const MAX_DURATION = 120000;
 
-const allowedExtensions = ['.jpg', '.png'];
+const allowedExtensions = ['.jpeg', '.jpg', '.png'];
 
 export class MetaData {
-	static insert = (metaRaw: { [name: string]: string }) => (images: Image[]) => {
-		const options = Meta.from(metaRaw).toExiftoolOptions();
+	static insert = (images: Image[]) => {
+		return Promise
+			.resolve(images)
+			.then((images) => images
+				.filter((image) => image.meta)
+				.filter((image) => allowedExtensions.includes(extname(image.fullname)))
+				.map((image) => Exiftool
+					.of([Input.Globbing.of(image.fullname)])
+					.with(new Tags.OverwriteOriginal())
+					.append(image.meta.toExiftoolOptions().options)
+				))
+			.then((exiftoolCommands) => exiftoolCommands
+				.map((exifCommand) => new Promise((resolve, reject) => {
+						let finished = false;
+						const process = spawn(exifCommand.build(), (error) => {
+							if (finished) return;
+							finished = true;
+							error ? reject(error) : resolve(undefined);
+						});
 
-		const exifCommand = Exiftool
-			.of(
-				images
-					.filter((file) => allowedExtensions.includes(extname(file.fullname)))
-					.map((file) => Input.Globbing.of(file.fullname))
-			)
-			.with(new Tags.OverwriteOriginal())
-			.append(options.options)
-
-		return new Promise((resolve, reject) => {
-				let finished = false;
-				const process = spawn(exifCommand.build(), (error) => {
-					if (finished) return;
-					finished = true;
-					error ? reject(error) : resolve(undefined);
-				});
-
-				setTimeout(() => {
-					if (finished) return;
-					finished = true;
-					process.kill(9);
-					reject(new Error('exiftool stuck'));
-				}, MAX_DURATION)
-			}
-		)
+						setTimeout(() => {
+							if (finished) return;
+							finished = true;
+							process.kill(9);
+							reject(new Error(`exiftool stuck: ${exifCommand.inspect()}`));
+						}, MAX_DURATION)
+					})
+				))
+			.then((response) => Promise.allSettled(response))
 	}
 
 }
