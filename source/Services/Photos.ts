@@ -48,60 +48,6 @@ export class Photos {
 			.then((images: Image[]) => images.map((image) => ({filename: path.relative(outputsDir, image.fullname)})))
 	}
 
-	async convertWithAreaPresets(area: string[], presetsNames: string[], input: string, output: string, name: string, meta: MetaPreset) {
-		const presets = Presets.byArea(area);
-		const presetsList = Array.isArray(presetsNames) && presetsNames.length ?
-			presetsNames.map((presetName) => {
-				const preset = presets.parameters[presetName];
-				if (preset) {
-					return {...preset, meta};
-				} else {
-					throw new InvalidPresetError(`Invalid preset name: ${presetName}`);
-				}
-			}) :
-			Object.values(presets.parameters);
-
-		try {
-			const currentOutputPath = path.join(outputsDir, output);
-			Photos.validatePathOf(path.join('output', ...area), currentOutputPath, true);
-		} catch (error) {
-			throw new AccessError('Output path must be inside ' + path.join(...area));
-		}
-
-		return this.convert(presetsList, input, output, name);
-	}
-
-	async convertMixed(area: string[], presets: string[] | ImagePreset, input: string, output: string, name: string, meta: MetaPreset) {
-		const areaPresets = Presets.byArea(area);
-		if (Array.isArray(presets) && presets.length) {
-			const presetsList =
-				presets.map((presetConfig) => {
-					if (typeof presetConfig === 'string') {
-						const preset = areaPresets.parameters[presetConfig];
-						if (preset) {
-							return {...preset, meta};
-						} else {
-							throw new InvalidPresetError(`Invalid preset name: ${presetConfig}`);
-						}
-					} else {
-						/** @ts-ignore */
-						return {...presetConfig, meta} as ImagePreset;
-					}
-				})
-
-			try {
-				const currentOutputPath = path.join(outputsDir, output);
-				Photos.validatePathOf(path.join('output', ...area), currentOutputPath, true);
-			} catch (error) {
-				throw new AccessError('Output path must be inside ' + path.join(...area));
-			}
-
-			return this.convert(presetsList, input, output, name);
-		} else {
-			throw new Error();
-		}
-	}
-
 	async convertExtendable(area: string[], presets: ImagePresetExtendable[], input: string, output: string, name: string, meta: MetaPreset) {
 		const presetsDictionary = Presets.byArea(area);
 

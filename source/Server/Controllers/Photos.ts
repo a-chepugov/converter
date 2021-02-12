@@ -28,29 +28,6 @@ const convertErrorHandler = (error: any) => {
 	throw error;
 }
 
-export function convertWithAreaPresets(ctx: Context, body: { [key: string]: any }) {
-	const profiler = profilerConvert.start(':convertByPreset');
-	const {input, output, name, area, presets, meta} = body;
-	return photos
-		.convertWithAreaPresets(area, presets, input, output, name, meta)
-		.then((response: any) => {
-			ctx.response.setHeader('X-COMPLETED-IN', profiler.end().result);
-			return {data: response};
-		})
-		.catch(convertErrorHandler);
-}
-
-export function convertMixed(ctx: Context, body: { [key: string]: any }) {
-	const profiler = profilerConvert.start(':convertMixed');
-	const {input, output, name, area, presets, meta} = body;
-	return photos.convertMixed(area, presets, input, output, name, meta)
-		.then((response: any) => {
-			ctx.response.setHeader('X-COMPLETED-IN', profiler.end().result);
-			return {data: response};
-		})
-		.catch(convertErrorHandler);
-}
-
 export function convert(ctx: Context, body: { [key: string]: any }) {
 	const profiler = profilerConvert.start(':convert');
 	const {input, output, name, area, presets, meta} = body;
