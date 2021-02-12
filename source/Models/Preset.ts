@@ -8,6 +8,10 @@ export type Valign = 'top' | 'center' | 'bottom';
 
 export type Watermark = WatermarkText | WatermarkImage;
 
+export interface Meta {
+	[key: string]: string
+}
+
 export interface Image {
 	suffix?: string,
 	extension: string,
@@ -18,7 +22,8 @@ export interface Image {
 	quality?: number,
 	unsharp?: [number, number, number, number],
 	interlace?: string,
-	watermarks?: Watermark[]
+	watermarks?: Watermark[],
+	meta?: Meta,
 }
 
 interface WatermarkBase {
